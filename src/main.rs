@@ -5,7 +5,7 @@ use bevy::{prelude::*, window::WindowResolution};
 use bevy_rapier2d::prelude::*;
 use bevy_asset_loader::prelude::*;
 
-const WINDOW_SIZE: Vec2 = vec2(500.0, 500.0);
+const WINDOW_SIZE: Vec2 = vec2(700.0, 500.0);
 
 #[derive(States, Clone, Eq, PartialEq, Debug, Hash, Default)]
 enum GameState {
