@@ -2756,6 +2756,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "mathx"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1ed171cc8025adb0137210fe5865e85e845bd7e67ac67fd6471137e1ea742a3a"
+
+[[package]]
 name = "matrixmultiply"
 version = "0.3.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3494,6 +3500,7 @@ dependencies = [
  "bevy",
  "bevy_asset_loader",
  "bevy_rapier2d",
+ "mathx",
 ]
 
 [[package]]
