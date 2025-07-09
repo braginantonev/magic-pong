@@ -2,4 +2,7 @@ use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 
 #[derive(AssetCollection, Resource)]
-pub struct GameAssets {}
+pub struct GameAssets {
+    #[asset(path = "ball.png")]
+    pub ball: Handle<Image>
+}
