@@ -2,18 +2,20 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use rand::Rng;
 
-use crate::{assets::GameAssets, WINDOW_SIZE};
+use crate::assets::GameAssets;
+use super::{Ball, MAX_START_SPEED_X, MAX_START_SPEED_Y, BALL_SIZE};
 
-const BALL_SIZE: Vec2 = vec2(75.0, 75.0);
+const MIN_VELOCITY_COEFFICIENT: f32 = 0.5;
 
-fn get_force_point() -> Vec2 {
+fn gen_random_velocity_coef() -> f32 {
     let mut rng = rand::rng();
-    vec2(rng.random_range(-0.8..=0.8) * WINDOW_SIZE.x, rng.random_range(-0.8..=0.8) * WINDOW_SIZE.y)
+    let coef = rng.random_range(MIN_VELOCITY_COEFFICIENT..=1.0);
+    [coef, -coef][rng.random_range(0..=1)]
 }
 
 fn spawn_ball(mut commands: Commands, asset: Res<GameAssets>) {
     commands.spawn((
-        super::Ball,
+        Ball,
         Sprite {
             image: asset.ball.clone(),
             custom_size: Some(BALL_SIZE),
@@ -23,8 +25,8 @@ fn spawn_ball(mut commands: Commands, asset: Res<GameAssets>) {
         Collider::ball(BALL_SIZE.x / 2.0),
         Restitution::coefficient(1.0),
         GravityScale(0.0),
-        //Todo: Доделать эту херню надо
-        //Velocity::linear(Velocity::linear_velocity_at_point(&Velocity::zero(), get_force_point(), vec2(0.0, 0.0)))
+        Friction::coefficient(0.0),
+        Velocity::linear(vec2(gen_random_velocity_coef() * MAX_START_SPEED_X, gen_random_velocity_coef() * MAX_START_SPEED_Y))
     ));
 }
 
