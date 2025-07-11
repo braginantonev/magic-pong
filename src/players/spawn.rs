@@ -6,7 +6,7 @@ use crate::WINDOW_SIZE;
 
 use super::*;
 
-const X_OFFSET: f32 = 35.0;
+const X_OFFSET: f32 = 35.0 + crate::walls::X_OFFSET;
 
 fn spawn_players(mut commands: Commands) {
     // Left player
@@ -20,6 +20,8 @@ fn spawn_players(mut commands: Commands) {
         },
         Transform::from_xyz(-WINDOW_SIZE.x / 2.0 + X_OFFSET, 0.0, 0.0),
         RigidBody::Fixed,
+        Friction::coefficient(0.0),
+        Restitution::coefficient(1.0),
         Collider::cuboid(PLAYER_SIZE.x / 2.0, PLAYER_SIZE.y / 2.0)
     ));
 
@@ -34,6 +36,8 @@ fn spawn_players(mut commands: Commands) {
         },
         Transform::from_xyz(WINDOW_SIZE.x / 2.0 - X_OFFSET, 0.0, 0.0),
         RigidBody::Fixed,
+        Restitution::coefficient(1.0),
+        Friction::coefficient(0.0),
         Collider::cuboid(PLAYER_SIZE.x / 2.0, PLAYER_SIZE.y / 2.0)
     ));
 }
