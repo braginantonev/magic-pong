@@ -2,6 +2,7 @@ mod players;
 mod ball;
 mod walls;
 mod assets;
+mod ui;
 
 use bevy::{prelude::*, window::WindowResolution};
 use bevy_rapier2d::prelude::*;
@@ -13,7 +14,9 @@ const WINDOW_SIZE: Vec2 = vec2(1050.0, 500.0);
 enum GameState {
     #[default]
     AssetsLoading,
-    InGame
+    InGame,
+    UpdateScore,
+    Restart
 }
 
 fn setup(mut commands: Commands) {
