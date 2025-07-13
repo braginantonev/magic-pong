@@ -1,3 +1,4 @@
+pub mod score;
 mod movement;
 mod spawn;
 
@@ -7,7 +8,7 @@ const SPEED: f32 = 250.0;
 const PLAYER_SIZE: Vec2 = Vec2::new(25.0, crate::WINDOW_SIZE.y / 3.5);
 
 #[derive(Component)]
-struct Player;
+pub struct Player;
 
 #[derive(Component)]
 struct Left;
@@ -22,6 +23,7 @@ impl Plugin for PlayersPlugin {
         app.add_plugins((
             spawn::SpawnPlugin,
             movement::MovementPlugin,
+            score::ScorePlugin,
         ));
     }
 }
