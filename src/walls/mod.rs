@@ -1,4 +1,5 @@
 mod spawn;
+mod collision;
 
 use bevy::prelude::*;
 
@@ -11,10 +12,19 @@ const VERTICAL_WALL_SIZE: Vec2 = vec2(5.0, WINDOW_SIZE.y);
 #[derive(Component)]
 struct Wall;
 
+#[derive(Component)]
+struct Left;
+
+#[derive(Component)]
+struct Right;
+
 pub struct WallsPlugin;
 
 impl Plugin for WallsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(spawn::SpawnPlugin);
+        app.add_plugins((
+            spawn::SpawnPlugin,
+            collision::CollisionPlugin,
+        ));
     }
 }
