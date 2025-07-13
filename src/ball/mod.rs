@@ -1,4 +1,5 @@
-mod spawn;
+pub mod spawn;
+mod restart;
 
 use bevy::prelude::*;
 
@@ -15,6 +16,7 @@ impl Plugin for BallPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins((
             spawn::SpawnPlugin,
+            restart::RestartPlugin
         ));
     }
 }
