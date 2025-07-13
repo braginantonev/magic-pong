@@ -1,6 +1,7 @@
 pub mod score;
+pub mod spawn;
+mod restart;
 mod movement;
-mod spawn;
 
 use bevy::prelude::*;
 
@@ -24,6 +25,7 @@ impl Plugin for PlayersPlugin {
             spawn::SpawnPlugin,
             movement::MovementPlugin,
             score::ScorePlugin,
+            restart::RestartPlugin,
         ));
     }
 }
