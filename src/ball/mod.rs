@@ -7,7 +7,7 @@ const MAX_START_SPEED_X: f32 = 500.0;
 const MAX_START_SPEED_Y: f32 = 200.0;
 
 #[derive(Component)]
-struct Ball;
+pub struct Ball;
 
 pub struct BallPlugin;
 

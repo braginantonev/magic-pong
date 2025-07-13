@@ -26,6 +26,9 @@ fn spawn_ball(mut commands: Commands, asset: Res<GameAssets>) {
         Restitution::coefficient(1.0),
         GravityScale(0.0),
         Friction::coefficient(0.0),
+        Ccd::enabled(),
+        ActiveEvents::COLLISION_EVENTS,
+        CollisionGroups::default(),
         Velocity::linear(vec2(gen_random_velocity_coef() * MAX_START_SPEED_X, gen_random_velocity_coef() * MAX_START_SPEED_Y))
     ));
 }
