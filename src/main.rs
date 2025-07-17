@@ -3,6 +3,7 @@ mod ball;
 mod walls;
 mod assets;
 mod ui;
+mod world;
 
 use bevy::{prelude::*, window::WindowResolution};
 use bevy_rapier2d::prelude::*;
@@ -14,6 +15,7 @@ const WINDOW_SIZE: Vec2 = vec2(1050.0, 500.0);
 enum GameState {
     #[default]
     AssetsLoading,
+    SpawnMainEntities,
     InGame,
     UpdateScore,
     Restart
@@ -29,7 +31,7 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        title: "Ping pong".into(),
+                        title: "Magic pong".into(),
                         resolution: WindowResolution::new(WINDOW_SIZE.x, WINDOW_SIZE.y),
                         ..default()
                     }),
@@ -43,16 +45,17 @@ fn main() {
         ))
         .init_state::<GameState>()
         .add_loading_state(
-            LoadingState::new(GameState::AssetsLoading).continue_to_state(GameState::InGame),
+            LoadingState::new(GameState::AssetsLoading).continue_to_state(GameState::SpawnMainEntities),
         )
         .configure_loading_state(
             LoadingStateConfig::new(GameState::AssetsLoading).load_collection::<assets::GameAssets>(),
         )
-        .add_systems(OnEnter(GameState::InGame), setup)
+        .add_systems(OnEnter(GameState::SpawnMainEntities), setup)
         .add_plugins((
             players::PlayersPlugin,
             ball::BallPlugin,
             walls::WallsPlugin,
+            world::WorldPlugin
         ))
         .run();
 }
