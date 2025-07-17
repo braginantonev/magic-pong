@@ -11,8 +11,8 @@ use super::{
 use crate::GameState;
 
 fn return_to_start_position(
-    mut q_r_player: Query<&mut Transform, (With<Player>, With<Right>)>,
-    mut q_l_player: Query<&mut Transform, (With<Player>, With<Left>)>,
+    mut q_r_player: Query<&mut Transform, (With<Player>, With<Right>, Without<Left>)>,
+    mut q_l_player: Query<&mut Transform, (With<Player>, With<Left>, Without<Right>)>,
 ) {
     q_r_player.single_mut().unwrap().translation = RIGHT_PLAYER_START_POSITION;
     q_l_player.single_mut().unwrap().translation = LEFT_PLAYER_START_POSITION;
