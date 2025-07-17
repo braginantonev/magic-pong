@@ -81,6 +81,6 @@ pub struct SpawnPlugin;
 
 impl Plugin for SpawnPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(crate::GameState::InGame), spawn_walls);
+        app.add_systems(OnEnter(crate::GameState::SpawnMainEntities), spawn_walls);
     }
 }

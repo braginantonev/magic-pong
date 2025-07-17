@@ -44,13 +44,11 @@ fn spawn_players(mut commands: Commands) {
     ));
 }
 
-
-
 pub struct SpawnPlugin;
 
 impl Plugin for SpawnPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(OnEnter(GameState::InGame), spawn_players);
+            .add_systems(OnEnter(GameState::SpawnMainEntities), spawn_players);
     }
 }
