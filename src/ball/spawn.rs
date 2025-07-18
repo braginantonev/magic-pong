@@ -5,7 +5,7 @@ use rand::Rng;
 use crate::{assets::GameAssets, GameState};
 use super::{Ball, MAX_START_SPEED_X, MAX_START_SPEED_Y, BALL_SIZE};
 
-const MIN_VELOCITY_COEFFICIENT: f32 = 0.5;
+const MIN_VELOCITY_COEFFICIENT: f32 = 0.7;
 
 pub fn gen_random_velocity_coef() -> f32 {
     let mut rng = rand::rng();
