@@ -55,7 +55,8 @@ fn main() {
             players::PlayersPlugin,
             ball::BallPlugin,
             walls::WallsPlugin,
-            world::WorldPlugin
+            world::WorldPlugin,
+            ui::UIPlugin
         ))
         .run();
 }
