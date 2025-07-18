@@ -32,13 +32,13 @@ fn ball_collision(
                 if (*a == ball && *b == right_wall) || (*a == right_wall && *b == ball) {
                     score.add_point_to_right();
                     next_state.set(GameState::UpdateScore);
-                    println!("Point to the right, in all = {}", score.right_score());
+                    //println!("Point to the right, in all = {}", score.right_score());
                 }
 
                 if (*a == ball && *b == left_wall) || (*a == left_wall && *b == ball) {
                     score.add_point_to_left();
                     next_state.set(GameState::UpdateScore);
-                    println!("Point to the left, in all = {}", score.left_score());
+                    //println!("Point to the left, in all = {}", score.left_score());
                 }
             }
             CollisionEvent::Stopped(_, _, _) => continue
