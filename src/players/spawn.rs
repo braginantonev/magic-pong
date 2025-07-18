@@ -1,10 +1,9 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-use crate::GameState;
-use crate::WINDOW_SIZE;
+use crate::{ GameState, WINDOW_SIZE };
 
-use super::*;
+use super::{ Player, PLAYER_SIZE, Position };
 
 const X_OFFSET: f32 = 35.0 + crate::walls::X_OFFSET;
 pub const LEFT_PLAYER_START_POSITION: Vec3 = vec3(-WINDOW_SIZE.x / 2.0 + X_OFFSET, 0.0, 0.0);
@@ -13,8 +12,7 @@ pub const RIGHT_PLAYER_START_POSITION: Vec3 = vec3(WINDOW_SIZE.x / 2.0 - X_OFFSE
 fn spawn_players(mut commands: Commands) {
     // Left player
     commands.spawn((
-        Player,
-        Left,
+        Player(Position::Left),
         Sprite {
             color: Color::WHITE,
             custom_size: Some(PLAYER_SIZE),
@@ -29,8 +27,7 @@ fn spawn_players(mut commands: Commands) {
 
     // Right player
     commands.spawn((
-        Player,
-        Right,
+        Player(Position::Right),
         Sprite {
             color: Color::WHITE,
             custom_size: Some(super::PLAYER_SIZE),

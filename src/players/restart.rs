@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use super::{
-    Player, Left, Right,
+    Player, Position,
     spawn::{
         RIGHT_PLAYER_START_POSITION,
         LEFT_PLAYER_START_POSITION
@@ -11,11 +11,14 @@ use super::{
 use crate::GameState;
 
 fn return_to_start_position(
-    mut q_r_player: Query<&mut Transform, (With<Player>, With<Right>, Without<Left>)>,
-    mut q_l_player: Query<&mut Transform, (With<Player>, With<Left>, Without<Right>)>,
+    q_players: Query<(&mut Transform, &Player)>,
 ) {
-    q_r_player.single_mut().unwrap().translation = RIGHT_PLAYER_START_POSITION;
-    q_l_player.single_mut().unwrap().translation = LEFT_PLAYER_START_POSITION;
+    for (mut transform, player) in q_players {
+        match player.0 {
+            Position::Left => transform.translation = LEFT_PLAYER_START_POSITION,
+            Position::Right => transform.translation = RIGHT_PLAYER_START_POSITION
+        }
+    }
 }
 
 pub struct RestartPlugin;
