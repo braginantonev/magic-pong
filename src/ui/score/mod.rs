@@ -5,14 +5,22 @@ use bevy::prelude::*;
 
 const TEXT_SIZE: f32 = 48.0;
 
-#[derive(Component)]
-struct Score;
+enum Type {
+    Right,
+    Left
+}
 
 #[derive(Component)]
-struct Left;
+struct Score {
+    r#type: Type,
+    need_update: bool
+}
 
-#[derive(Component)]
-struct Right;
+impl Score {
+    fn new(_type: Type) -> Self {
+        Score { r#type: _type, need_update: false }
+    }
+}
 
 pub struct ScorePlugin;
 
