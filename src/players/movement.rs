@@ -1,36 +1,36 @@
 use bevy::prelude::*;
 use mathx::Math;
 
-use super::*;
+use super::{ Player, Position, PLAYER_SIZE, SPEED };
 
 const Y_LIMIT: f32 = crate::WINDOW_SIZE.y / 2.0 - PLAYER_SIZE.y / 2.0;
 
-fn move_by_input_r(
+fn move_players(
     time: Res<Time>,
     input: Res<ButtonInput<KeyCode>>,
-    mut query: Query<&mut Transform, (With<Player>, With<Right>)>,
-    
+    q_players: Query<(&mut Transform, &Player)>
 ) {
-    let mut transform = query.single_mut().unwrap();
-
-    if input.pressed(KeyCode::ArrowUp) {
-        transform.translation.y = Math::clamp(transform.translation.y + SPEED * time.delta_secs(), -Y_LIMIT, Y_LIMIT);
+    let arrows_coef = if input.pressed(KeyCode::ArrowUp) {
+        1.0
     } else if input.pressed(KeyCode::ArrowDown) {
-        transform.translation.y = Math::clamp(transform.translation.y - SPEED * time.delta_secs(), -Y_LIMIT, Y_LIMIT);
-    }
-}
+        -1.0
+    } else {
+        0.0
+    };
 
-fn move_by_input_l(
-    time: Res<Time>,
-    input: Res<ButtonInput<KeyCode>>,
-    mut query: Query<&mut Transform, (With<Player>, With<Left>)>
-) {
-    let mut transform = query.single_mut().unwrap();
-
-    if input.pressed(KeyCode::KeyW) {
-        transform.translation.y = Math::clamp(transform.translation.y + SPEED * time.delta_secs(), -Y_LIMIT, Y_LIMIT);
+    let ws_coef = if input.pressed(KeyCode::KeyW) {
+        1.0
     } else if input.pressed(KeyCode::KeyS) {
-        transform.translation.y = Math::clamp(transform.translation.y - SPEED * time.delta_secs(), -Y_LIMIT, Y_LIMIT);
+        -1.0
+    } else {
+        0.0
+    };
+
+    for (mut transform, player) in q_players {
+        match player.0 {
+            Position::Left => transform.translation.y = Math::clamp(transform.translation.y + SPEED * time.delta_secs() * ws_coef, -Y_LIMIT, Y_LIMIT),
+            Position::Right => transform.translation.y = Math::clamp(transform.translation.y + SPEED * time.delta_secs() * arrows_coef, -Y_LIMIT, Y_LIMIT)
+        } 
     }
 }
 
@@ -38,6 +38,6 @@ pub struct MovementPlugin;
 
 impl Plugin for MovementPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, (move_by_input_r, move_by_input_l).run_if(in_state(crate::GameState::InGame)));
+        app.add_systems(Update, move_players.run_if(in_state(crate::GameState::InGame)));
     }
 }
