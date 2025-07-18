@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::Velocity;
 
-use super::{spawn::gen_random_velocity_coef, MAX_START_SPEED_X, MAX_START_SPEED_Y, Ball};
+use super::Ball;
 use crate::GameState;
 
 fn return_to_spawn_position(
