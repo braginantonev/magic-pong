@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::GameState;
 
-const UPDATE_SCORE_DURATION: f32 = 2.0;
+pub const UPDATE_SCORE_DURATION: f32 = 2.0;
 
 #[derive(Resource)]
 struct UpdateScoreTimer(Timer);
