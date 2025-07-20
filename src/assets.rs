@@ -7,5 +7,8 @@ pub struct GameAssets {
     pub ball: Handle<Image>,
 
     #[asset(path = "player board.png")]
-    pub player_board: Handle<Image>
+    pub player_board: Handle<Image>,
+
+    #[asset(path = "border.png")]
+    pub border: Handle<Image>
 }
