@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use mathx::Math;
 
-use super::{ Player, Position, PLAYER_SIZE, SPEED };
+use super::{ Player, PPos, PLAYER_SIZE, SPEED };
 
 const Y_LIMIT: f32 = crate::WINDOW_SIZE.y / 2.0 - PLAYER_SIZE.y / 2.0;
 
@@ -27,9 +27,9 @@ fn move_players(
     };
 
     for (mut transform, player) in q_players {
-        match player.0 {
-            Position::Left => transform.translation.y = Math::clamp(transform.translation.y + SPEED * time.delta_secs() * ws_coef, -Y_LIMIT, Y_LIMIT),
-            Position::Right => transform.translation.y = Math::clamp(transform.translation.y + SPEED * time.delta_secs() * arrows_coef, -Y_LIMIT, Y_LIMIT)
+        match player.position {
+            PPos::Left => transform.translation.y = Math::clamp(transform.translation.y + SPEED * time.delta_secs() * ws_coef, -Y_LIMIT, Y_LIMIT),
+            PPos::Right => transform.translation.y = Math::clamp(transform.translation.y + SPEED * time.delta_secs() * arrows_coef, -Y_LIMIT, Y_LIMIT)
         } 
     }
 }
