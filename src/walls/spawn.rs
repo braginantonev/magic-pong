@@ -5,7 +5,7 @@ use crate::WINDOW_SIZE;
 
 use super::{
     ActiveWall, Position,
-     X_OFFSET, HORIZONTAL_WALL_SIZE, VERTICAL_WALL_SIZE
+    X_OFFSET, HORIZONTAL_WALL_SIZE, VERTICAL_WALL_SIZE
 };
 
 fn spawn_walls(mut commands: Commands) {
@@ -21,7 +21,7 @@ fn spawn_walls(mut commands: Commands) {
             custom_size: Some(HORIZONTAL_WALL_SIZE),
             ..default()
         },
-        Transform::from_xyz(0.0, WINDOW_SIZE.y / 2.0 - HORIZONTAL_WALL_SIZE.y, 0.0),
+        Transform::from_xyz(0.0, WINDOW_SIZE.y / 2.0 - HORIZONTAL_WALL_SIZE.y  / 2.0, 0.0),
     ));
 
     // Horizontal down wall
@@ -35,7 +35,7 @@ fn spawn_walls(mut commands: Commands) {
             custom_size: Some(HORIZONTAL_WALL_SIZE),
             ..default()
         },
-        Transform::from_xyz(0.0, -WINDOW_SIZE.y / 2.0 + HORIZONTAL_WALL_SIZE.y, 0.0),
+        Transform::from_xyz(0.0, -WINDOW_SIZE.y / 2.0 + HORIZONTAL_WALL_SIZE.y / 2.0, 0.0),
     ));
 
     // Vertical right wall
@@ -53,7 +53,7 @@ fn spawn_walls(mut commands: Commands) {
             custom_size: Some(VERTICAL_WALL_SIZE),
             ..default()
         },
-        Transform::from_xyz(WINDOW_SIZE.x / 2.0 - VERTICAL_WALL_SIZE.x - X_OFFSET, 0.0, 0.0),
+        Transform::from_xyz(WINDOW_SIZE.x / 2.0 - VERTICAL_WALL_SIZE.x / 2.0 - X_OFFSET, 0.0, 0.0),
     ));
 
     // Vertical left wall
@@ -71,7 +71,7 @@ fn spawn_walls(mut commands: Commands) {
             custom_size: Some(VERTICAL_WALL_SIZE),
             ..default()
         },
-        Transform::from_xyz(-WINDOW_SIZE.x / 2.0 + VERTICAL_WALL_SIZE.x + X_OFFSET, 0.0, 0.0),
+        Transform::from_xyz(-WINDOW_SIZE.x / 2.0 + VERTICAL_WALL_SIZE.x / 2.0 + X_OFFSET, 0.0, 0.0),
     ));
 }
 
