@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{ GameState, players::score::PlayersScore };
-use super::{ Score, Type };
+use super::{ Score, PPos };
 
 const ANIMATION_DURATION: f32 = crate::world::score::UPDATE_SCORE_DURATION / 2.0;
 
@@ -18,8 +18,8 @@ fn update_score(
     q_score: Query<(Entity, &mut Score, &mut Text2d, &mut Transform)>
 ) {
     for (entity, mut score, mut text, mut transform) in q_score {
-        match score.r#type {
-            Type::Left => {
+        match score.ppos {
+            PPos::Left => {
                 let player_score = players_score.left_score().to_string();
                 if text.0 != player_score {
                     score.need_update = true;
@@ -28,7 +28,7 @@ fn update_score(
                     continue;
                 }
             },
-            Type::Right => {
+            PPos::Right => {
                 let player_score = players_score.right_score().to_string();
                 if text.0 != player_score {
                     score.need_update = true;

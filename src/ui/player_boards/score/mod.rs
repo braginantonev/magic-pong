@@ -2,23 +2,19 @@ mod spawn;
 mod update;
 
 use bevy::prelude::*;
+use super::PPos;
 
 const TEXT_SIZE: f32 = 48.0;
 
-enum Type {
-    Right,
-    Left
-}
-
 #[derive(Component)]
 struct Score {
-    r#type: Type,
+    ppos: PPos,
     need_update: bool
 }
 
 impl Score {
-    fn new(_type: Type) -> Self {
-        Score { r#type: _type, need_update: false }
+    fn new(player_position: PPos) -> Self {
+        Score { ppos: player_position, need_update: false }
     }
 }
 

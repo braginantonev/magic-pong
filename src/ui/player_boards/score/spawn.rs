@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use super::{ Score, Type, TEXT_SIZE };
+use super::{ Score, PPos, TEXT_SIZE };
 use crate::{ GameState, WINDOW_SIZE };
 
 const OFFSET: Vec2 = vec2(TEXT_SIZE, TEXT_SIZE + 10.0);
@@ -10,7 +10,7 @@ const RIGHT_SCORE_POSITION: Vec3 = vec3(-LEFT_SCORE_POSITION.x, LEFT_SCORE_POSIT
 fn spawn_score(mut commands: Commands) {
     // Left score label (negative x)
     commands.spawn((
-        Score::new(Type::Left),
+        Score::new(PPos::Left),
         Text2d::new("0"),
         TextFont {
             font_size: TEXT_SIZE,
@@ -22,7 +22,7 @@ fn spawn_score(mut commands: Commands) {
 
     // Right score label
     commands.spawn((
-        Score::new(Type::Right),
+        Score::new(PPos::Right),
         Text2d::new("0"),
         TextFont {
             font_size: TEXT_SIZE,
