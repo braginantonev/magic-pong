@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::GameState;
 
 #[derive(Resource)]
-struct RestartTimer(Timer);
+pub struct RestartTimer(pub Timer);
 
 const RESTART_DURATION: f32 = 1.0;
 
@@ -26,8 +26,8 @@ pub struct RestartPlugin;
 impl Plugin for RestartPlugin {
     fn build(&self, app: &mut App) {
         app
-            .insert_resource(RestartTimer(Timer::from_seconds(RESTART_DURATION, TimerMode::Once)))
-            .add_systems(OnEnter(GameState::UpdateScore), start_timer)
+            .insert_resource(RestartTimer(Timer::from_seconds(super::score::UPDATE_SCORE_DURATION + RESTART_DURATION, TimerMode::Once)))
+            .add_systems(OnEnter(GameState::Restart), start_timer)
             .add_systems(Update, restart_game.run_if(in_state(GameState::Restart)));
     }
 }
