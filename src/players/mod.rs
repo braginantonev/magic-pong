@@ -16,7 +16,6 @@ pub struct PlayersPlugin;
 impl Plugin for PlayersPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_event::<IncreaseScore>()
             .add_plugins((
             spawn::SpawnPlugin,
             movement::MovementPlugin,
@@ -26,13 +25,11 @@ impl Plugin for PlayersPlugin {
     }
 }
 
+#[derive(Clone, Copy)]
 pub enum PPos {
     Right,
     Left
 }
-
-#[derive(Event)]
-pub struct IncreaseScore(PPos);
 
 #[derive(Component)]
 pub struct Player {

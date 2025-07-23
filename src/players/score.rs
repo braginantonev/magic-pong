@@ -1,5 +1,8 @@
 use bevy::prelude::*;
 
+#[derive(Event)]
+pub struct IncreaseScoreEvent(pub super::PPos);
+
 #[derive(Resource, Default)]
 pub struct PlayersScore {
     right_player: u32,
@@ -30,6 +33,8 @@ pub struct ScorePlugin;
 
 impl Plugin for ScorePlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<PlayersScore>();
+        app
+            .add_event::<IncreaseScoreEvent>()
+            .init_resource::<PlayersScore>();
     }
 }
