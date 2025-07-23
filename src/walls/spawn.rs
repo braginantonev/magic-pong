@@ -4,7 +4,7 @@ use bevy_rapier2d::prelude::*;
 use crate::WINDOW_SIZE;
 
 use super::{
-    ActiveWall, Position,
+    ActiveWall, PPos,
     X_OFFSET, HORIZONTAL_WALL_SIZE, VERTICAL_WALL_SIZE
 };
 
@@ -40,7 +40,7 @@ fn spawn_walls(mut commands: Commands) {
 
     // Vertical right wall
     commands.spawn((
-        ActiveWall(Position::Right),
+        ActiveWall(PPos::Right),
         RigidBody::Fixed,
         Collider::cuboid(VERTICAL_WALL_SIZE.x / 2.0, VERTICAL_WALL_SIZE.y / 2.0),
         Restitution::coefficient(1.0),
@@ -58,7 +58,7 @@ fn spawn_walls(mut commands: Commands) {
 
     // Vertical left wall
     commands.spawn((
-        ActiveWall(Position::Left),
+        ActiveWall(PPos::Left),
         RigidBody::Fixed,
         Collider::cuboid(VERTICAL_WALL_SIZE.x / 2.0, VERTICAL_WALL_SIZE.y / 2.0),
         Restitution::coefficient(1.0),
