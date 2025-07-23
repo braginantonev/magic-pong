@@ -17,7 +17,6 @@ enum GameState {
     AssetsLoading,
     SpawnMainEntities,
     InGame,
-    UpdateScore,
     Restart
 }
 
@@ -39,7 +38,7 @@ fn main() {
                 }),
             RapierPhysicsPlugin::<NoUserData>::default(),
             RapierDebugRenderPlugin {
-                enabled: true,
+                enabled: false,
                 ..default()
             }
         ))
