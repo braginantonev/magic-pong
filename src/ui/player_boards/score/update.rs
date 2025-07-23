@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{ GameState, players::score::PlayersScore };
+use crate::{ GameState, players::score::{ PlayersScore, IncreaseScoreEvent } };
 use super::{ Score, PPos };
 
 const ANIMATION_DURATION: f32 = crate::world::score::UPDATE_SCORE_DURATION / 2.0;
@@ -15,30 +15,16 @@ pub struct ScaleAnimation {
 fn update_score(
     mut commands: Commands,
     players_score: Res<PlayersScore>,
-    q_score: Query<(Entity, &mut Score, &mut Text2d, &mut Transform)>
+    mut score_event: EventReader<IncreaseScoreEvent>,
+    q_score: Query<(Entity, &Score, &mut Text2d, &mut Transform), Without<ScaleAnimation>>
 ) {
-    for (entity, mut score, mut text, mut transform) in q_score {
-        match score.ppos {
-            PPos::Left => {
-                let player_score = players_score.left_score().to_string();
-                if text.0 != player_score {
-                    score.need_update = true;
-                    text.0 = player_score;
-                } else { 
-                    continue;
-                }
-            },
-            PPos::Right => {
-                let player_score = players_score.right_score().to_string();
-                if text.0 != player_score {
-                    score.need_update = true;
-                    text.0 = player_score;
-                } else { 
-                    continue;
-                }
-            },
-        }
+    let mut pos_update: PPos = PPos::Left;
 
+    for ev in score_event.read() {
+        pos_update = ev.0;
+    }
+
+    let mut add_anim = |entity: Entity, mut transform: Mut<'_, Transform>|{
         transform.scale *= 2.0;
 
         commands.entity(entity).insert(ScaleAnimation {
@@ -46,19 +32,29 @@ fn update_score(
             target_scale:transform.scale / 2.0,
             timer: Timer::from_seconds(ANIMATION_DURATION, TimerMode::Once)
         });
+    };
+
+    for (entity, score, mut text, transform) in q_score {
+        match (score.0, pos_update) {
+            (PPos::Left, PPos::Left) => { 
+                text.0 = players_score.left_score().to_string();
+                add_anim(entity, transform);
+            },
+            (PPos::Right, PPos::Right) => { 
+                text.0 = players_score.right_score().to_string();
+                add_anim(entity, transform);
+            },
+            _ => continue
+        }
     }
 }
 
 fn animate_scale_score(
     mut commands: Commands,
     time: Res<Time>,
-    q_score: Query<(Entity, &Score, &mut Transform, &mut ScaleAnimation)>
+    q_score: Query<(Entity, &mut Transform, &mut ScaleAnimation), With<Score>>
 ) {
-    for (entity, score, mut transform, mut anim) in q_score {
-        if !score.need_update {
-            continue;
-        }
-
+    for (entity, mut transform, mut anim) in q_score {
         anim.timer.tick(time.delta());
 
         transform.scale = anim.start_scale.lerp(anim.target_scale, anim.timer.elapsed_secs());
@@ -74,7 +70,7 @@ pub struct ScoreUpdatePlugin;
 impl Plugin for ScoreUpdatePlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(OnEnter(GameState::UpdateScore), update_score)
-            .add_systems(Update, animate_scale_score.run_if(in_state(GameState::UpdateScore)));
+            .add_systems(OnEnter(GameState::Restart), update_score)
+            .add_systems(Update, animate_scale_score.run_if(in_state(GameState::Restart)));
     }
 }
