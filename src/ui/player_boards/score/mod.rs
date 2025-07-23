@@ -7,16 +7,7 @@ use super::PPos;
 const TEXT_SIZE: f32 = 48.0;
 
 #[derive(Component)]
-struct Score {
-    ppos: PPos,
-    need_update: bool
-}
-
-impl Score {
-    fn new(player_position: PPos) -> Self {
-        Score { ppos: player_position, need_update: false }
-    }
-}
+struct Score(PPos);
 
 pub struct ScorePlugin;
 
