@@ -1,11 +1,11 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-use super::{ ActiveWall, Position };
+use super::{ ActiveWall, PPos };
 
 use crate::{
     ball::Ball,
-    players::score::PlayersScore,
+    players::score::{ PlayersScore, IncreaseScoreEvent },
     GameState
 };
 
@@ -15,7 +15,7 @@ fn ball_collision(
     q_ball: Query<Entity, With<Ball>>,
     q_wall: Query<(Entity, &ActiveWall)>,
     mut collisions_events: EventReader<CollisionEvent>,
-    mut next_state: ResMut<NextState<GameState>>
+    mut increase_score_event: EventWriter<IncreaseScoreEvent>,
 ) {
     let ball = q_ball.single().unwrap();
 
@@ -29,11 +29,11 @@ fn ball_collision(
                 for (entity, wall) in q_wall {
                     if (*a == ball && *b == entity) || (*a == entity && *b == ball) {
                         match wall.0 {
-                            Position::Right => score.add_point_to_right(),
-                            Position::Left => score.add_point_to_left(),
+                            PPos::Right => score.add_point_to_right(),
+                            PPos::Left => score.add_point_to_left()
                         }
-                    
-                        next_state.set(GameState::UpdateScore);
+                        
+                        increase_score_event.write(IncreaseScoreEvent(wall.0));
                         break;
                     }
                 }
