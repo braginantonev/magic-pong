@@ -21,6 +21,6 @@ pub struct RestartPlugin;
 impl Plugin for RestartPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(OnEnter(GameState::Restart), (stop_ball, return_to_spawn_position));
+            .add_systems(OnEnter(GameState::Restart), (stop_ball, return_to_spawn_position).chain());
     }
 }

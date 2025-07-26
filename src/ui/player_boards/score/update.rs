@@ -18,6 +18,10 @@ fn update_score(
     mut score_event: EventReader<IncreaseScoreEvent>,
     q_score: Query<(Entity, &Score, &mut Text2d, &mut Transform), Without<ScaleAnimation>>
 ) {
+    if score_event.is_empty() {
+        return
+    }
+
     let mut pos_update: PPos = PPos::Left;
 
     for ev in score_event.read() {
@@ -37,10 +41,12 @@ fn update_score(
     for (entity, score, mut text, transform) in q_score {
         match (score.0, pos_update) {
             (PPos::Left, PPos::Left) => { 
+                println!("update score for left");
                 text.0 = players_score.left_score().to_string();
                 add_anim(entity, transform);
             },
             (PPos::Right, PPos::Right) => { 
+                println!("update score for right");
                 text.0 = players_score.right_score().to_string();
                 add_anim(entity, transform);
             },
@@ -71,6 +77,6 @@ impl Plugin for ScoreUpdatePlugin {
     fn build(&self, app: &mut App) {
         app
             .add_systems(OnEnter(GameState::Restart), update_score)
-            .add_systems(Update, animate_scale_score.run_if(in_state(GameState::Restart)));
+            .add_systems(Update, animate_scale_score.run_if(in_state(GameState::Restart)).after(update_score));
     }
 }
