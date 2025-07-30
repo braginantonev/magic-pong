@@ -1,5 +1,23 @@
-//use bevy::prelude::*;
+mod ultimate;
+mod skill;
 
+use bevy::prelude::*;
+
+use crate::GameState;
+
+//* -- Ability Plugin -- */
+
+pub struct AbilityPlugin;
+
+impl Plugin for AbilityPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_plugins((
+            ultimate::UltimatePlugin,
+        )); 
+    }
+}
+
+//* -- Abilities functional -- */
 pub trait Ability {
     fn to_str(&self) -> String;
 }
