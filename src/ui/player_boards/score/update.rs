@@ -63,7 +63,7 @@ fn animate_scale_score(
     for (entity, mut transform, mut anim) in q_score {
         anim.timer.tick(time.delta());
 
-        transform.scale = anim.start_scale.lerp(anim.target_scale, anim.timer.elapsed_secs());
+        transform.scale = anim.start_scale.lerp(anim.target_scale, anim.timer.fraction());
 
         if anim.timer.finished() {
             commands.entity(entity).remove::<ScaleAnimation>();
