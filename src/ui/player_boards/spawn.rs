@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{ assets::GameAssets, GameState, WINDOW_SIZE };
-use super::{ PlayerBoard, PPos, BOARD_SIZE };
+use super::{ PlayerBoard, BOARD_SIZE };
 
 const LAYER_Z: f32 = 0.0;
 
@@ -14,7 +14,7 @@ fn spawn_boards(
 ) {
     // Left player board
     commands.spawn((
-        PlayerBoard(PPos::Left),
+        PlayerBoard,
         Sprite {
             image: assets.player_board.clone(),
             custom_size: Some(BOARD_SIZE),
@@ -25,7 +25,7 @@ fn spawn_boards(
 
     // Right player board
     commands.spawn((
-        PlayerBoard(PPos::Right),
+        PlayerBoard,
         Sprite {
             image: assets.player_board.clone(),
             custom_size: Some(BOARD_SIZE),
