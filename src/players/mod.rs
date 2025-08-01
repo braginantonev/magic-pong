@@ -19,12 +19,12 @@ impl Plugin for PlayersPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_plugins((
-            spawn::SpawnPlugin,
-            movement::MovementPlugin,
-            score::ScorePlugin,
-            restart::RestartPlugin,
-            abilities::AbilityPlugin,
-        ));
+                spawn::SpawnPlugin,
+                movement::MovementPlugin,
+                score::ScorePlugin,
+                restart::RestartPlugin,
+                abilities::AbilityPlugin,
+            ));
     }
 }
 
@@ -32,6 +32,15 @@ impl Plugin for PlayersPlugin {
 pub enum PPos {
     Right,
     Left
+}
+
+impl PPos {
+    pub fn negative(&self) -> Self {
+        match self {
+            PPos::Right => PPos::Left,
+            PPos::Left => PPos::Right
+        }
+    }
 }
 
 #[derive(Component)]
@@ -81,17 +90,19 @@ impl Player {
         self.ultimate_progress += 1;
     }
 
-    pub fn use_ultimate(&mut self) {
+    // Return used ultimate
+    pub fn use_ultimate(&mut self) -> Option<Ultimates> {
         if !self.ultimate_is_available() {
             println!("ultimate are not available, ultimate progress = {}", self.ultimate_progress);
-            return
+            return None
         }
-
-        //Todo: Create event
-        println!("use ultimate");
         
+        let used_ult = self.get_ultimate();
+
         self.ultimate_progress = 0;
         self.ultimates_queue.next();
+
+        Some(used_ult)
     }
 
     pub fn get_ultimate(&self) -> Ultimates {
