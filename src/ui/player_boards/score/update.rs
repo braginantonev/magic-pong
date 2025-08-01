@@ -28,7 +28,12 @@ fn update_score(
         pos_update = ev.0;
     }
 
-    let mut add_anim = |entity: Entity, mut transform: Mut<'_, Transform>|{
+    for (entity, score, mut text, mut transform) in q_score {
+        if score.0 != pos_update {
+            continue
+        }
+
+        text.0 = players_score.get(pos_update).to_string();
         transform.scale *= 2.0;
 
         commands.entity(entity).insert(ScaleAnimation {
@@ -36,20 +41,6 @@ fn update_score(
             target_scale:transform.scale / 2.0,
             timer: Timer::from_seconds(ANIMATION_DURATION, TimerMode::Once)
         });
-    };
-
-    for (entity, score, mut text, transform) in q_score {
-        match (score.0, pos_update) {
-            (PPos::Left, PPos::Left) => { 
-                text.0 = players_score.left_score().to_string();
-                add_anim(entity, transform);
-            },
-            (PPos::Right, PPos::Right) => { 
-                text.0 = players_score.right_score().to_string();
-                add_anim(entity, transform);
-            },
-            _ => continue
-        }
     }
 }
 
