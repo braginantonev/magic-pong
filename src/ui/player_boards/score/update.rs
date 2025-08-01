@@ -41,12 +41,10 @@ fn update_score(
     for (entity, score, mut text, transform) in q_score {
         match (score.0, pos_update) {
             (PPos::Left, PPos::Left) => { 
-                println!("update score for left");
                 text.0 = players_score.left_score().to_string();
                 add_anim(entity, transform);
             },
             (PPos::Right, PPos::Right) => { 
-                println!("update score for right");
                 text.0 = players_score.right_score().to_string();
                 add_anim(entity, transform);
             },
