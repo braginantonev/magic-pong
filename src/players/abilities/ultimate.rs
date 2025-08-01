@@ -1,8 +1,13 @@
 use bevy::prelude::*;
 
 use crate::{
-    GameState,
-    players::{ Player, PPos, score::IncreaseScoreEvent }
+    players::{ score::IncreaseScoreEvent, PPos, Player },
+    GameState
+};
+
+use super::{
+    UseAbilityEvent,
+    Ultimates,
 };
 
 fn update_ultimate_progress(
@@ -29,16 +34,24 @@ fn update_ultimate_progress(
 
 fn use_ultimate_by_input(
     input: Res<ButtonInput<KeyCode>>,
+    mut ability_event: EventWriter<UseAbilityEvent<Ultimates>>,
     q_players: Query<&mut Player>
 ) {
     for mut player in q_players {
         match player.position {
-            PPos::Left => if input.just_pressed(KeyCode::KeyD) { player.use_ultimate(); },
-            PPos::Right => if input.just_pressed(KeyCode::ArrowRight) { player.use_ultimate(); }
+            PPos::Left => if input.just_pressed(KeyCode::KeyD) {
+                if let Some(used_ult) = player.use_ultimate() {
+                    ability_event.write(UseAbilityEvent{ pos: player.position, ability: used_ult });
+                }  
+            },
+            PPos::Right => if input.just_pressed(KeyCode::ArrowRight) {
+                if let Some(used_ult) = player.use_ultimate() {
+                    ability_event.write(UseAbilityEvent{ pos: player.position, ability: used_ult });
+                }  
+            }
         }
     }
 }
-
 pub struct UltimatePlugin;
 
 impl Plugin for UltimatePlugin {
