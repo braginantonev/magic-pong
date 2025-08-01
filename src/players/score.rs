@@ -20,12 +20,10 @@ impl PlayersScore {
 
     pub fn add_point_to_left(&mut self) {
         self.left_player += 1;
-        //Todo: add update ui score label
     }
 
     pub fn add_point_to_right(&mut self) {
         self.right_player += 1;
-        //Todo: add update ui score label
     }
 }
 
