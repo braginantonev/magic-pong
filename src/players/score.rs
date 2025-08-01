@@ -1,7 +1,9 @@
 use bevy::prelude::*;
 
+use super::PPos;
+
 #[derive(Event)]
-pub struct IncreaseScoreEvent(pub super::PPos);
+pub struct IncreaseScoreEvent(pub PPos);
 
 #[derive(Resource, Default)]
 pub struct PlayersScore {
@@ -10,12 +12,11 @@ pub struct PlayersScore {
 }
 
 impl PlayersScore {
-    pub fn left_score(&self) -> u32 {
-        self.left_player
-    }
-
-    pub fn right_score(&self) -> u32 {
-        self.right_player
+    pub fn get(&self, player_pos: PPos) -> u32 {
+        match player_pos {
+            PPos::Right => self.right_player,
+            PPos::Left => self.left_player
+        }
     }
 
     pub fn add_point_to_left(&mut self) {
