@@ -20,7 +20,7 @@ fn spawn_placeholders(
             custom_size: Some(ULTIMATE_PLACEHOLDER_SIZE),
             ..default()
         },
-        Transform::from_translation(ULTIMATE_PLACEHOLDER_POSITION)
+        Transform::from_translation(ULTIMATE_PLACEHOLDER_POSITION.with_x(-ULTIMATE_PLACEHOLDER_POSITION.x))
     ));
 
     // Left skill placeholder
@@ -31,7 +31,7 @@ fn spawn_placeholders(
             custom_size: Some(SKILL_PLACEHOLDER_SIZE),
             ..default()
         },
-        Transform::from_translation(SKILL_PLACEHOLDER_POSITION)
+        Transform::from_translation(SKILL_PLACEHOLDER_POSITION.with_x(-SKILL_PLACEHOLDER_POSITION.x))
     ));
 
     // Right ultimate placeholder
@@ -42,7 +42,7 @@ fn spawn_placeholders(
             custom_size: Some(ULTIMATE_PLACEHOLDER_SIZE),
             ..default()
         },
-        Transform::from_translation(ULTIMATE_PLACEHOLDER_POSITION.with_x(-ULTIMATE_PLACEHOLDER_POSITION.x))
+        Transform::from_translation(ULTIMATE_PLACEHOLDER_POSITION)
     ));
 
     // Right skill placeholder
@@ -53,7 +53,7 @@ fn spawn_placeholders(
             custom_size: Some(SKILL_PLACEHOLDER_SIZE),
             ..default()
         },
-        Transform::from_translation(SKILL_PLACEHOLDER_POSITION.with_x(-SKILL_PLACEHOLDER_POSITION.x))
+        Transform::from_translation(SKILL_PLACEHOLDER_POSITION)
     ));
 }
 
