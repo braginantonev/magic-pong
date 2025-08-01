@@ -29,11 +29,11 @@ fn ball_collision(
                 for (entity, wall) in q_wall {
                     if (*a == ball && *b == entity) || (*a == entity && *b == ball) {
                         match wall.0 {
-                            PPos::Right => score.add_point_to_right(),
-                            PPos::Left => score.add_point_to_left()
+                            PPos::Right => score.add_point_to_left(),
+                            PPos::Left => score.add_point_to_right()
                         }
-                        
-                        increase_score_event.write(IncreaseScoreEvent(wall.0));
+
+                        increase_score_event.write(IncreaseScoreEvent(wall.0.negative()));
                         break;
                     }
                 }
