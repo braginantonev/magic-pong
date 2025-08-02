@@ -1,9 +1,11 @@
 use bevy::prelude::*;
 
 use crate::GameState;
+
 use super::{
-    Placeholder, PPos, PlaceholderType, 
-    ULTIMATE_PLACEHOLDER_SIZE, ULTIMATE_PLACEHOLDER_POSITION, SKILL_PLACEHOLDER_SIZE, SKILL_PLACEHOLDER_POSITION
+    Placeholder, PPos, PlaceholderType, PlaceholderAnimation,
+    ULTIMATE_PLACEHOLDER_SIZE, ULTIMATE_PLACEHOLDER_POSITION,
+    SKILL_PLACEHOLDER_SIZE, SKILL_PLACEHOLDER_POSITION
 };
 
 const ULTIMATE_PLACEHOLDER_COLOR: Color = Color::BLACK;
@@ -31,7 +33,8 @@ fn spawn_placeholders(
             custom_size: Some(SKILL_PLACEHOLDER_SIZE),
             ..default()
         },
-        Transform::from_translation(SKILL_PLACEHOLDER_POSITION.with_x(-SKILL_PLACEHOLDER_POSITION.x))
+        Transform::from_translation(SKILL_PLACEHOLDER_POSITION.with_x(-SKILL_PLACEHOLDER_POSITION.x)),
+        PlaceholderAnimation::skill_default(PPos::Left)
     ));
 
     // Right ultimate placeholder
@@ -53,7 +56,8 @@ fn spawn_placeholders(
             custom_size: Some(SKILL_PLACEHOLDER_SIZE),
             ..default()
         },
-        Transform::from_translation(SKILL_PLACEHOLDER_POSITION)
+        Transform::from_translation(SKILL_PLACEHOLDER_POSITION),
+        PlaceholderAnimation::skill_default(PPos::Right)
     ));
 }
 

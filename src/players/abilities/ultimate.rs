@@ -57,6 +57,7 @@ pub struct UltimatePlugin;
 impl Plugin for UltimatePlugin {
     fn build(&self, app: &mut App) {
         app
+            .add_event::<UseAbilityEvent<Ultimates>>()
             .add_systems(OnEnter(GameState::Restart), update_ultimate_progress)
             .add_systems(Update, use_ultimate_by_input.run_if(in_state(GameState::InGame)).after(update_ultimate_progress));
     }
