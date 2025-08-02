@@ -8,7 +8,7 @@ use bevy::prelude::*;
 use abilities::{ AbilityQueue, Skills, Ultimates };
 
 pub const ULTIMATE_STEPS: u8 = 5;
-pub const SKILL_DURATION: f32 = 5.0;
+pub const SKILL_REFRESH_DURATION: f32 = 10.0;
 
 const SPEED: f32 = 250.0;
 const PLAYER_SIZE: Vec2 = Vec2::new(25.0, crate::WINDOW_SIZE.y / 3.5);
@@ -28,7 +28,7 @@ impl Plugin for PlayersPlugin {
     }
 }
 
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 pub enum PPos {
     Right,
     Left
@@ -58,7 +58,7 @@ impl Player {
     pub fn new(pos: PPos) -> Self {
         Self { 
             position: pos, ultimate_progress: 0,
-            skill_timer: Timer::from_seconds(SKILL_DURATION, TimerMode::Once),
+            skill_timer: Timer::from_seconds(SKILL_REFRESH_DURATION, TimerMode::Once),
             skills_queue: AbilityQueue::new(vec![
                 Skills::Debug1,
                 Skills::Debug2
@@ -93,7 +93,6 @@ impl Player {
     // Return used ultimate
     pub fn use_ultimate(&mut self) -> Option<Ultimates> {
         if !self.ultimate_is_available() {
-            println!("ultimate are not available, ultimate progress = {}", self.ultimate_progress);
             return None
         }
         
@@ -110,17 +109,25 @@ impl Player {
     }
 
     // Skill
-    pub fn get_skills_reloading_progress(&self) -> f32 {
-        self.skill_timer.elapsed_secs()
+    pub fn skill_is_available(&self) -> bool {
+        self.skill_timer.finished()
     }
 
-    pub fn use_skill(&mut self) {
-        if !self.skill_timer.finished() {
-            return
+    pub fn get_skill_timer_fraction(&self) -> f32 {
+        self.skill_timer.fraction()
+    }
+
+    pub fn use_skill(&mut self) -> Option<Skills> {
+        if !self.skill_is_available() {
+            println!("skill not available");
+            return None
         }
 
-        //Todo: Create event
+        let skill = self.skills_queue.get();
+
         self.skill_timer.reset();
         self.skills_queue.next();
+
+        Some(skill)
     }
 }
