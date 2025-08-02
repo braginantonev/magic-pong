@@ -28,10 +28,9 @@ pub struct AbilityPlugin;
 impl Plugin for AbilityPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_event::<UseAbilityEvent<Ultimates>>()
-            .add_event::<UseAbilityEvent<Skills>>()
             .add_plugins((
                 ultimate::UltimatePlugin,
+                skill::SkillPlugin
             )); 
     }
 }
