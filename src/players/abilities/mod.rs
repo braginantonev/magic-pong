@@ -1,10 +1,27 @@
 mod ultimate;
-mod ultimates_list;
+mod ultimates_rz;
 mod skill;
+mod skills_rz;
 
 use bevy::prelude::*;
 
 use super::PPos;
+
+//* -- Ability Plugin -- */
+
+pub struct AbilityPlugin;
+
+impl Plugin for AbilityPlugin {
+    fn build(&self, app: &mut App) {
+        app
+            .add_plugins((
+                ultimate::UltimatePlugin,
+                ultimates_rz::UltimatesRealizationPlugin,
+                skill::SkillPlugin,
+                skills_rz::SkillsRealizationPlugin
+            )); 
+    }
+}
 
 //* -- Events -- */
 
@@ -37,39 +54,32 @@ impl Stage for Second {}
 struct Third;
 impl Stage for Third {}
 
+struct End;
+impl Stage for End {}
+
 #[derive(Event)]
-struct AbilityStage<T: Ability, S: Stage>(T, S);
+struct AbilityStage<T: Ability, S: Stage> {
+    ppos: PPos,
 
-//* -- Ability Plugin -- */
-
-pub struct AbilityPlugin;
-
-impl Plugin for AbilityPlugin {
-    fn build(&self, app: &mut App) {
-        app
-            .add_plugins((
-                ultimate::UltimatePlugin,
-                skill::SkillPlugin
-            )); 
-    }
+    _ability: T,
+    _stage: S
 }
 
 //* -- Abilities functional -- */
+
 pub trait Ability {
     fn to_str(&self) -> String;
 }
 
 #[derive(Clone, Copy)]
 pub enum SkillsList {
-    Debug1,
-    Debug2,
+    Revert,
 }
 
 impl Ability for SkillsList {
     fn to_str(&self) -> String {
         match self {
-            SkillsList::Debug1 => "Debug 1".to_string(),
-            SkillsList::Debug2 => "Debug 2".to_string(),
+            SkillsList::Revert => "Revert".to_string(),
         }
     }
 }
