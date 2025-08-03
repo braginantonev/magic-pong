@@ -5,7 +5,15 @@ use crate::{
     GameState
 };
 
-use super::{ UseAbilityEvent, SkillsList };
+use super::{ 
+    UseAbilityEvent, SkillsList, AbilityStage,
+    First,
+
+    // Skills
+    skills_rz::{
+        revert::Revert,
+    }
+};
 
 pub struct SkillPlugin;
 
@@ -13,7 +21,8 @@ impl Plugin for SkillPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_event::<UseAbilityEvent<SkillsList>>()
-            .add_systems(Update, (tick_skill_timer, use_skill_by_input).run_if(in_state(GameState::InGame)));
+            .add_systems(Update, (tick_skill_timer, use_skill_by_input).run_if(in_state(GameState::InGame)))
+            .add_systems(Update, start_skill_stages.run_if(in_state(GameState::InGame)).run_if(on_event::<UseAbilityEvent<SkillsList>>));
     }
 }
 
@@ -48,5 +57,16 @@ fn use_skill_by_input(
                 }
             }
         }
+    }
+}
+
+fn start_skill_stages(
+    mut ability_event: EventReader<UseAbilityEvent<SkillsList>>,
+    mut ult_db1_wr:  EventWriter<AbilityStage<Revert, First>>
+) {
+    for ev in ability_event.read() {
+        match ev.get_ability() {
+            SkillsList::Revert => ult_db1_wr.write(AbilityStage { ppos: ev.get_pos(), _ability: Revert, _stage: First }),
+        };
     }
 }
