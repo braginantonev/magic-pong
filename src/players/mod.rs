@@ -5,7 +5,7 @@ mod restart;
 mod movement;
 
 use bevy::prelude::*;
-use abilities::{ AbilityQueue, Skills, Ultimates };
+use abilities::{ AbilityQueue, SkillsList, UltimatesList };
 
 pub const ULTIMATE_STEPS: u8 = 5;
 pub const SKILL_REFRESH_DURATION: f32 = 10.0;
@@ -47,10 +47,10 @@ impl PPos {
 pub struct Player {
     position: PPos,
 
-    skills_queue: AbilityQueue<Skills>,
+    skills_queue: AbilityQueue<SkillsList>,
     skill_timer: Timer,
 
-    ultimates_queue: AbilityQueue<Ultimates>,
+    ultimates_queue: AbilityQueue<UltimatesList>,
     ultimate_progress: u8,
 }
 
@@ -60,12 +60,12 @@ impl Player {
             position: pos, ultimate_progress: 0,
             skill_timer: Timer::from_seconds(SKILL_REFRESH_DURATION, TimerMode::Once),
             skills_queue: AbilityQueue::new(vec![
-                Skills::Debug1,
-                Skills::Debug2
+                SkillsList::Debug1,
+                SkillsList::Debug2
             ]),
             ultimates_queue: AbilityQueue::new(vec![
-                Ultimates::Debug1,
-                Ultimates::Debug2,
+                UltimatesList::Debug1,
+                UltimatesList::Debug2,
             ])
         }
     }
@@ -91,7 +91,7 @@ impl Player {
     }
 
     // Return used ultimate
-    pub fn use_ultimate(&mut self) -> Option<Ultimates> {
+    pub fn use_ultimate(&mut self) -> Option<UltimatesList> {
         if !self.ultimate_is_available() {
             return None
         }
@@ -104,7 +104,7 @@ impl Player {
         Some(used_ult)
     }
 
-    pub fn get_ultimate(&self) -> Ultimates {
+    pub fn get_ultimate(&self) -> UltimatesList {
         self.ultimates_queue.get()
     }
 
@@ -117,7 +117,7 @@ impl Player {
         self.skill_timer.fraction()
     }
 
-    pub fn use_skill(&mut self) -> Option<Skills> {
+    pub fn use_skill(&mut self) -> Option<SkillsList> {
         if !self.skill_is_available() {
             println!("skill not available");
             return None

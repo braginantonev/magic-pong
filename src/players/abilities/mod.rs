@@ -1,4 +1,5 @@
 mod ultimate;
+mod ultimates_list;
 mod skill;
 
 use bevy::prelude::*;
@@ -41,31 +42,31 @@ pub trait Ability {
 }
 
 #[derive(Clone, Copy)]
-pub enum Skills {
+pub enum SkillsList {
     Debug1,
     Debug2,
 }
 
-impl Ability for Skills {
+impl Ability for SkillsList {
     fn to_str(&self) -> String {
         match self {
-            Skills::Debug1 => "Debug 1".to_string(),
-            Skills::Debug2 => "Debug 2".to_string(),
+            SkillsList::Debug1 => "Debug 1".to_string(),
+            SkillsList::Debug2 => "Debug 2".to_string(),
         }
     }
 }
 
 #[derive(Clone, Copy)]
-pub enum Ultimates {
+pub enum UltimatesList {
     Debug1,
     Debug2,
 }
 
-impl Ability for Ultimates {
+impl Ability for UltimatesList {
     fn to_str(&self) -> String {
         match self {
-            Ultimates::Debug1 => "Debug 1".to_string(),
-            Ultimates::Debug2 => "Debug 2".to_string(),
+            UltimatesList::Debug1 => "Debug 1".to_string(),
+            UltimatesList::Debug2 => "Debug 2".to_string(),
         }
     }
 }
