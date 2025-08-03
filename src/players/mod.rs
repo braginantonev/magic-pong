@@ -60,8 +60,7 @@ impl Player {
             position: pos, ultimate_progress: 0,
             skill_timer: Timer::from_seconds(SKILL_REFRESH_DURATION, TimerMode::Once),
             skills_queue: AbilityQueue::new(vec![
-                SkillsList::Debug1,
-                SkillsList::Debug2
+                SkillsList::Revert,
             ]),
             ultimates_queue: AbilityQueue::new(vec![
                 UltimatesList::Debug1,
