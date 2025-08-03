@@ -6,6 +6,8 @@ use bevy::prelude::*;
 
 use super::PPos;
 
+//* -- Events -- */
+
 #[derive(Event)]
 pub struct UseAbilityEvent<T: Ability> {
     pos: PPos,
@@ -21,6 +23,22 @@ impl<T: Ability + Copy> UseAbilityEvent<T> {
         self.ability
     }
 }
+
+//* -- -- Ability Stages -- -- */
+
+trait Stage {}
+
+struct First;
+impl Stage for First {}
+
+struct Second;
+impl Stage for Second {}
+
+struct Third;
+impl Stage for Third {}
+
+#[derive(Event)]
+struct AbilityStage<T: Ability, S: Stage>(T, S);
 
 //* -- Ability Plugin -- */
 
