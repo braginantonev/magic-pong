@@ -43,9 +43,17 @@ impl PPos {
     }
 }
 
+#[derive(PartialEq, Clone, Copy)]
+pub enum PState {
+    Normal,
+    Silence,
+    Stun
+}
+
 #[derive(Component)]
 pub struct Player {
     position: PPos,
+    state: PState,
 
     skills_queue: AbilityQueue<SkillsList>,
     skill_timer: Timer,
@@ -57,15 +65,19 @@ pub struct Player {
 impl Player {
     pub fn new(pos: PPos) -> Self {
         Self { 
-            position: pos, ultimate_progress: 0,
+            position: pos,
+            state: PState::Normal,
+            
             skill_timer: Timer::from_seconds(SKILL_REFRESH_DURATION, TimerMode::Once),
             skills_queue: AbilityQueue::new(vec![
                 SkillsList::Revert,
             ]),
+
             ultimates_queue: AbilityQueue::new(vec![
                 UltimatesList::Debug1,
                 UltimatesList::Debug2,
-            ])
+            ]),
+            ultimate_progress: 0,
         }
     }
 
@@ -73,7 +85,15 @@ impl Player {
         self.position
     }
 
-    // Ultimate
+    pub fn get_state(&self) -> PState {
+        self.state
+    }
+
+    pub fn set_state(&mut self, new_state: PState) {
+        self.state = new_state
+    }
+
+    //* Ultimate
     pub fn ultimate_progress(&self) -> u8 {
         self.ultimate_progress
     }
@@ -94,6 +114,10 @@ impl Player {
         if !self.ultimate_is_available() {
             return None
         }
+
+        if self.state != PState::Normal {
+            return None
+        }
         
         let used_ult = self.get_ultimate();
 
@@ -107,7 +131,7 @@ impl Player {
         self.ultimates_queue.get()
     }
 
-    // Skill
+    //* Skill
     pub fn skill_is_available(&self) -> bool {
         self.skill_timer.finished()
     }
@@ -116,9 +140,13 @@ impl Player {
         self.skill_timer.fraction()
     }
 
+    // Return used skill
     pub fn use_skill(&mut self) -> Option<SkillsList> {
         if !self.skill_is_available() {
-            println!("skill not available");
+            return None
+        }
+
+        if self.state == PState::Stun {
             return None
         }
 
