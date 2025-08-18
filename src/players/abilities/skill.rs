@@ -6,13 +6,10 @@ use crate::{
 };
 
 use super::{ 
-    UseAbilityEvent, SkillsList, AbilityStage,
-    First,
-
-    // Skills
-    skills_rz::{
-        revert::Revert,
-    }
+    UseAbilityEvent, SkillsList,
+    Stager,
+    StageTimer,
+    AbilitiesList,
 };
 
 pub struct SkillPlugin;
@@ -25,6 +22,8 @@ impl Plugin for SkillPlugin {
             .add_systems(Update, start_skill_stages.run_if(in_state(GameState::InGame)).run_if(on_event::<UseAbilityEvent<SkillsList>>));
     }
 }
+
+
 
 fn tick_skill_timer(
     time: Res<Time>,
@@ -61,12 +60,13 @@ fn use_skill_by_input(
 }
 
 fn start_skill_stages(
+    mut commands: Commands,
     mut ability_event: EventReader<UseAbilityEvent<SkillsList>>,
-    mut ult_db1_wr:  EventWriter<AbilityStage<Revert, First>>
 ) {
+    let stager = commands.spawn(Stager).id();
     for ev in ability_event.read() {
-        match ev.get_ability() {
-            SkillsList::Revert => ult_db1_wr.write(AbilityStage { ppos: ev.get_pos(), _ability: Revert, _stage: First }),
-        };
+        commands.entity(stager).insert(match ev.get_ability() {
+            SkillsList::Revert => StageTimer::new(ev.pos, AbilitiesList::Skill(SkillsList::Revert)),
+        });
     }
 }
