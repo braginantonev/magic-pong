@@ -7,14 +7,10 @@ use crate::{
 
 use super::{
     UseAbilityEvent,
-    AbilityStage,
+    Stager,
+    StageTimer,
     UltimatesList,
-    First,
-
-    //Ultimates
-    ultimates_rz::{
-        debug1::Debug1
-    }
+    AbilitiesList,
 };
 
 pub struct UltimatePlugin;
@@ -75,13 +71,14 @@ fn use_ultimate_by_input(
 }
 
 fn start_ultimate_stages(
+    mut commands: Commands,
     mut ability_event: EventReader<UseAbilityEvent<UltimatesList>>,
-    mut ult_db1_wr:  EventWriter<AbilityStage<Debug1, First>>
 ) {
+    let stager = commands.spawn(Stager).id();
     for ev in ability_event.read() {
-        match ev.get_ability() {
-            UltimatesList::Debug1 => ult_db1_wr.write(AbilityStage { ppos: ev.get_pos(), _ability: Debug1, _stage: First }),
-            UltimatesList::Debug2 => continue,
-        };
+        commands.entity(stager).insert(match ev.get_ability() {
+            UltimatesList::Debug1 => StageTimer::new(ev.pos, AbilitiesList::Ultimate(UltimatesList::Debug1)),
+            UltimatesList::Debug2 => todo!(),
+        });
     }
 }
