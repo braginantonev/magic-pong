@@ -50,14 +50,18 @@ impl StageCounter {
         Self { current: 0, count: count }
     }
 
-    pub fn add(&mut self) {
+    // Return true if counter is to end stage
+    pub fn add(&mut self) -> bool {
         if self.current < self.count {
             self.current += 1;
         }
 
         if self.current == self.count {
             self.current = 0;
+            return true
         }
+
+        false
     }
 
     pub fn get_stages(&self) -> u8 {
