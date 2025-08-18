@@ -5,17 +5,25 @@ use crate::{
     GameState
 };
 
-use super::{ UseAbilityEvent, Skills };
+use super::{ 
+    UseAbilityEvent, SkillsList,
+    Stager,
+    StageTimer,
+    AbilitiesList,
+};
 
 pub struct SkillPlugin;
 
 impl Plugin for SkillPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_event::<UseAbilityEvent<Skills>>()
-            .add_systems(Update, (tick_skill_timer, use_skill_by_input).run_if(in_state(GameState::InGame)));
+            .add_event::<UseAbilityEvent<SkillsList>>()
+            .add_systems(Update, (tick_skill_timer, use_skill_by_input).run_if(in_state(GameState::InGame)))
+            .add_systems(Update, start_skill_stages.run_if(in_state(GameState::InGame)).run_if(on_event::<UseAbilityEvent<SkillsList>>));
     }
 }
+
+
 
 fn tick_skill_timer(
     time: Res<Time>,
@@ -33,7 +41,7 @@ fn tick_skill_timer(
 fn use_skill_by_input(
     q_players: Query<&mut Player>,
     input: Res<ButtonInput<KeyCode>>,
-    mut ability_event: EventWriter<UseAbilityEvent<Skills>>
+    mut ability_event: EventWriter<UseAbilityEvent<SkillsList>>
 ) {
     for mut player in q_players {
         match player.get_pos() {
@@ -48,5 +56,17 @@ fn use_skill_by_input(
                 }
             }
         }
+    }
+}
+
+fn start_skill_stages(
+    mut commands: Commands,
+    mut ability_event: EventReader<UseAbilityEvent<SkillsList>>,
+) {
+    let stager = commands.spawn(Stager).id();
+    for ev in ability_event.read() {
+        commands.entity(stager).insert(match ev.get_ability() {
+            SkillsList::Revert => StageTimer::new(ev.pos, AbilitiesList::Skill(SkillsList::Revert)),
+        });
     }
 }

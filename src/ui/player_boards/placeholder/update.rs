@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::{
     players::{ 
         abilities::{
-            Skills, Ultimates, UseAbilityEvent
+            SkillsList, UltimatesList, UseAbilityEvent
         },
         score::IncreaseScoreEvent,
         Player,
@@ -23,7 +23,7 @@ const ULTIMATE_STEP_SIZE: f32 = ULTIMATE_PLACEHOLDER_MAX_Y / ULTIMATE_PLACEHOLDE
 fn clear_skill_placeholder(
     mut commands: Commands,
     q_placeholders: Query<(Entity, &Transform, &Placeholder), Without<PlaceholderAnimation>>,
-    mut use_skill_event: EventReader<UseAbilityEvent<Skills>>
+    mut use_skill_event: EventReader<UseAbilityEvent<SkillsList>>
 ) {
     if use_skill_event.is_empty() {
         return
@@ -61,7 +61,7 @@ fn clear_skill_placeholder(
 fn clear_ultimate_placeholder(
     mut commands: Commands,
     q_placeholders: Query<(Entity, &Transform, &Placeholder), Without<PlaceholderAnimation>>,
-    mut use_ultimate_event: EventReader<UseAbilityEvent<Ultimates>>
+    mut use_ultimate_event: EventReader<UseAbilityEvent<UltimatesList>>
 ) {
     if use_ultimate_event.is_empty() {
         return
@@ -169,10 +169,6 @@ fn animate_skill_placeholders(
     q_placeholders: Query<(Entity, &mut Transform, &mut PlaceholderAnimation, &Placeholder)>,
 ) {
     for (entity, mut transform, mut anim, placeholder) in q_placeholders {
-        if placeholder.typ != PlaceholderType::Skill {
-            continue;
-        }
-
         anim.timer.tick(time.delta());
 
         transform.scale = anim.start_scale.lerp(anim.target_scale, anim.timer.fraction());
@@ -182,7 +178,7 @@ fn animate_skill_placeholders(
             
             //* This is a crutch for skill placeholder
             //Todo: need optimization
-            if anim.reload_needed {
+            if placeholder.typ == PlaceholderType::Skill && anim.reload_needed {
                 *anim = PlaceholderAnimation::skill_default(placeholder.position);
                 continue;
             }

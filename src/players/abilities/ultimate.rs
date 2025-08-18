@@ -7,8 +7,25 @@ use crate::{
 
 use super::{
     UseAbilityEvent,
-    Ultimates,
+    Stager,
+    StageTimer,
+    UltimatesList,
+    AbilitiesList,
 };
+
+pub struct UltimatePlugin;
+
+impl Plugin for UltimatePlugin {
+    fn build(&self, app: &mut App) {
+        app
+            .add_event::<UseAbilityEvent<UltimatesList>>()
+            .add_systems(OnEnter(GameState::Restart), update_ultimate_progress)
+            .add_systems(Update, use_ultimate_by_input.run_if(in_state(GameState::InGame)))
+            .add_systems(Update, start_ultimate_stages.run_if(in_state(GameState::InGame)).run_if(on_event::<UseAbilityEvent<UltimatesList>>));
+    }
+}
+
+//* -- Systems -- */
 
 fn update_ultimate_progress(
     mut score_event: EventReader<IncreaseScoreEvent>,
@@ -34,7 +51,7 @@ fn update_ultimate_progress(
 
 fn use_ultimate_by_input(
     input: Res<ButtonInput<KeyCode>>,
-    mut ability_event: EventWriter<UseAbilityEvent<Ultimates>>,
+    mut ability_event: EventWriter<UseAbilityEvent<UltimatesList>>,
     q_players: Query<&mut Player>
 ) {
     for mut player in q_players {
@@ -52,13 +69,16 @@ fn use_ultimate_by_input(
         }
     }
 }
-pub struct UltimatePlugin;
 
-impl Plugin for UltimatePlugin {
-    fn build(&self, app: &mut App) {
-        app
-            .add_event::<UseAbilityEvent<Ultimates>>()
-            .add_systems(OnEnter(GameState::Restart), update_ultimate_progress)
-            .add_systems(Update, use_ultimate_by_input.run_if(in_state(GameState::InGame)).after(update_ultimate_progress));
+fn start_ultimate_stages(
+    mut commands: Commands,
+    mut ability_event: EventReader<UseAbilityEvent<UltimatesList>>,
+) {
+    let stager = commands.spawn(Stager).id();
+    for ev in ability_event.read() {
+        commands.entity(stager).insert(match ev.get_ability() {
+            UltimatesList::Debug1 => StageTimer::new(ev.pos, AbilitiesList::Ultimate(UltimatesList::Debug1)),
+            UltimatesList::Debug2 => todo!(),
+        });
     }
 }
