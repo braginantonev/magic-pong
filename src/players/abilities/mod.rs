@@ -2,10 +2,15 @@ mod ultimate;
 mod ultimates_rz;
 mod skill;
 mod skills_rz;
+mod abilities_db;
 
 use bevy::prelude::*;
 
+use crate::GameState;
+
 use super::PPos;
+
+const MIN_STAGE_TIME: f64 = 0.1;
 
 //* -- Ability Plugin -- */
 
@@ -14,11 +19,14 @@ pub struct AbilityPlugin;
 impl Plugin for AbilityPlugin {
     fn build(&self, app: &mut App) {
         app
+            .add_event::<StageEntered>()
+            .add_systems(Update, tick_stage.run_if(in_state(GameState::InGame)))
             .add_plugins((
+                abilities_db::AbilitiesDBPlugin,
                 ultimate::UltimatePlugin,
                 ultimates_rz::UltimatesRealizationPlugin,
                 skill::SkillPlugin,
-                skills_rz::SkillsRealizationPlugin
+                skills_rz::SkillsRealizationPlugin,
             )); 
     }
 }
@@ -41,29 +49,68 @@ impl<T: Ability + Copy> UseAbilityEvent<T> {
     }
 }
 
-//* -- -- Ability Stages -- -- */
-
-trait Stage {}
-
-struct First;
-impl Stage for First {}
-
-struct Second;
-impl Stage for Second {}
-
-struct Third;
-impl Stage for Third {}
-
-struct End;
-impl Stage for End {}
+//* -- Ability Stages -- */
 
 #[derive(Event)]
-struct AbilityStage<T: Ability, S: Stage> {
-    ppos: PPos,
-
-    _ability: T,
-    _stage: S
+pub struct StageEntered {
+    ability: AbilitiesList,
+    player: PPos,
 }
+
+#[derive(Component)]
+struct Stager;
+
+#[derive(Component)]
+struct StageTimer{
+    timer: Timer,
+    player: PPos,
+    ability: AbilitiesList,
+}
+
+impl StageTimer {
+    pub fn new(player_pos: PPos, ability: AbilitiesList) -> Self {
+        StageTimer { timer: Timer::from_seconds(0.0, TimerMode::Once), player: player_pos, ability: ability }
+    }
+}
+
+fn tick_stage(
+    mut ability_info: ResMut<abilities_db::AbilitiesInfo>,
+    time: Res<Time>,
+    mut commands: Commands,
+    mut stage_ev: EventWriter<StageEntered>,
+    q_stagers: Query<(Entity, &mut StageTimer), With<Stager>>,
+) {
+    for (entity, mut stage_timer) in q_stagers {
+        stage_timer.timer.tick(time.delta());
+
+        if stage_timer.timer.finished() {
+            println!("write event");
+            stage_ev.write(StageEntered { ability: stage_timer.ability, player: stage_timer.player });
+
+            if !ability_info.add_to_counter(stage_timer.ability) { // Not in the end stage
+                println!("update timer");
+                stage_timer.timer = Timer::from_seconds(ability_info.get_current_stage_time(stage_timer.ability), TimerMode::Once);
+            } else {
+                println!("delete stager with timer");
+                commands.entity(entity).despawn();
+            }
+        }
+    }
+}
+
+struct ObjectAnimation {
+    start_position: Vec3,
+    start_scale: Vec2,
+
+    target_position: Vec3,
+    target_scale: Vec2,
+
+    timer: Timer
+}
+
+#[derive(Component)]
+struct AbilityStageAnimator(Vec<ObjectAnimation>);
+
 
 //* -- Abilities functional -- */
 
@@ -71,7 +118,7 @@ pub trait Ability {
     fn to_str(&self) -> String;
 }
 
-#[derive(Clone, Copy)]
+#[derive(Hash, Clone, Copy, PartialEq, Eq)]
 pub enum SkillsList {
     Revert,
 }
@@ -79,12 +126,12 @@ pub enum SkillsList {
 impl Ability for SkillsList {
     fn to_str(&self) -> String {
         match self {
-            SkillsList::Revert => "Revert".to_string(),
+            Self::Revert => "Revert".to_string(),
         }
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Hash, Clone, Copy, PartialEq, Eq)]
 pub enum UltimatesList {
     Debug1,
     Debug2,
@@ -97,6 +144,12 @@ impl Ability for UltimatesList {
             UltimatesList::Debug2 => "Debug 2".to_string(),
         }
     }
+}
+
+#[derive(Hash, Clone, Copy, PartialEq, Eq)]
+enum AbilitiesList {
+    Skill(SkillsList),
+    Ultimate(UltimatesList)
 }
 
 pub struct AbilityQueue<T: Ability> {
