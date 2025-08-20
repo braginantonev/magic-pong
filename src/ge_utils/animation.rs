@@ -6,7 +6,8 @@ pub struct GEAnimationPlugin;
 
 impl Plugin for GEAnimationPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, tick_animations.run_if(in_state(GameState::InGame)));
+        app
+            .add_systems(Update, (tick_animations, animate_entities).chain().run_if(in_state(GameState::InGame)));
     }
 }
 
@@ -21,6 +22,15 @@ fn tick_animations(
         if anim.timer.finished() {
             commands.entity(entity).remove::<GameEntityAnimation>();
         }
+    }
+}
+
+fn animate_entities(
+    q_ball: Query<(&mut Transform, &GameEntityAnimation)>,
+) {
+    for (mut transform, anim) in q_ball {
+        transform.translation = anim.lerp_position();
+        transform.scale = anim.lerp_scale();
     }
 }
 
