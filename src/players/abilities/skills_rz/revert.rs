@@ -7,7 +7,6 @@ use crate::{
         PPos, 
         Player,
         abilities::{ 
-            Ability,
             AbilitiesList,
             SkillsList,
             StageEntered,
@@ -26,14 +25,6 @@ impl Plugin for SkillRevertPlugin {
             .add_systems(Update, sl_revert_1s.run_if(in_state(GameState::InGame)).run_if(on_event::<Skill1sRevertEvent>))
             .add_systems(Update, check_revert_stages.run_if(in_state(GameState::InGame)).run_if(on_event::<StageEntered>))
         ;
-    }
-}
-
-pub struct Revert;
-
-impl Ability for Revert {
-    fn to_str(&self) -> String {
-        "Revert".to_string()
     }
 }
 

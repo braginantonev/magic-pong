@@ -8,7 +8,6 @@ use crate::{
         spawn::gen_random_velocity_coef,
     }, 
     players::abilities::{
-        Ability,
         AbilitiesList,
         UltimatesList,
         StageEntered,
@@ -34,15 +33,6 @@ impl Plugin for Debug1Plugin {
             .add_systems(Update, ul_db1_2s.run_if(in_state(GameState::InGame)).run_if(on_event::<Ult2sDebug1Event>))
             .add_systems(Update, ul_db1_3s.run_if(in_state(GameState::InGame)).run_if(on_event::<Ult3sDebug1Event>))
         ;
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct Debug1;
-
-impl Ability for Debug1 {
-    fn to_str(&self) -> String {
-        "Debug 1".to_string()
     }
 }
 
