@@ -1,3 +1,5 @@
+pub mod ge_utils;
+
 mod players;
 mod ball;
 mod walls;
@@ -51,11 +53,12 @@ fn main() {
         )
         .add_systems(OnEnter(GameState::SpawnMainEntities), setup)
         .add_plugins((
+            ge_utils::GEUtilsPlugin,
+            ui::UIPlugin,
             players::PlayersPlugin,
             ball::BallPlugin,
             walls::WallsPlugin,
             world::WorldPlugin,
-            ui::UIPlugin
         ))
         .run();
 }
