@@ -10,8 +10,6 @@ use crate::GameState;
 
 use super::PPos;
 
-const MIN_STAGE_TIME: f64 = 0.1;
-
 //* -- Ability Plugin -- */
 
 pub struct AbilityPlugin;
@@ -97,20 +95,6 @@ fn tick_stage(
         }
     }
 }
-
-struct ObjectAnimation {
-    start_position: Vec3,
-    start_scale: Vec2,
-
-    target_position: Vec3,
-    target_scale: Vec2,
-
-    timer: Timer
-}
-
-#[derive(Component)]
-struct AbilityStageAnimator(Vec<ObjectAnimation>);
-
 
 //* -- Abilities functional -- */
 
