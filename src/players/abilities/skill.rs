@@ -6,7 +6,8 @@ use crate::{
 };
 
 use super::{ 
-    UseAbilityEvent, SkillsList,
+    UseAbilityEvent,
+    SkillsList,
     Stager,
     StageTimer,
     AbilitiesList,
@@ -64,6 +65,7 @@ fn start_skill_stages(
     mut ability_event: EventReader<UseAbilityEvent<SkillsList>>,
 ) {
     let stager = commands.spawn(Stager).id();
+    
     for ev in ability_event.read() {
         commands.entity(stager).insert(match ev.get_ability() {
             SkillsList::Revert => StageTimer::new(ev.pos, AbilitiesList::Skill(SkillsList::Revert)),
