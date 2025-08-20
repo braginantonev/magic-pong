@@ -10,9 +10,13 @@ use crate::{
     players::abilities::{
         Ability,
         AbilitiesList,
-        StageEntered,
         UltimatesList,
+        StageEntered,
         abilities_db::AbilitiesInfo,
+    },
+    ge_utils::animation::{
+        GameEntityAnimation,
+        SEVec3,
     },
     GameState,
 };
@@ -78,24 +82,36 @@ fn check_debug1_stages(
 }
 
 fn ul_db1_1s(
-    mut q_ball: Query<(&mut Velocity, &mut Transform), With<Ball>>,
+    abilities_info: Res<AbilitiesInfo>,
+    mut commands: Commands,
+    mut q_ball: Query<(Entity, &mut Velocity, &Transform), With<Ball>>,
 ) {
-    let (mut velocity, mut transform) = q_ball.single_mut().unwrap();
-    let mut rng = rand::rng();
+    let (entity, mut velocity, transform) = q_ball.single_mut().unwrap();
     velocity.linvel = Vec2::ZERO;
     velocity.angvel = 25.0;
 
-    transform.translation = vec3(200.0 * rng.random_range(-1.0..=1.0), 100.0 * rng.random_range(-1.0..=1.0), 0.0);
+    let mut rng = rand::rng();
+    commands.entity(entity).insert(GameEntityAnimation::new(
+        SEVec3::new(transform.translation, vec3(200.0 * rng.random_range(-1.0..=1.0), 100.0 * rng.random_range(-1.0..=1.0), 0.0)),
+        SEVec3::new_without_anim(transform.scale),
+        abilities_info.get_current_stage_time(AbilitiesList::Ultimate(UltimatesList::Debug1))
+    ));
 }
 
 fn ul_db1_2s(
-    mut q_ball: Query<(&mut Velocity, &mut Transform), With<Ball>>,
+    abilities_info: Res<AbilitiesInfo>,
+    mut commands: Commands,
+    mut q_ball: Query<(Entity, &mut Velocity, &Transform), With<Ball>>,
 ) {
-    let (mut velocity, mut transform) = q_ball.single_mut().unwrap();
-    let mut rng = rand::rng();
+    let (entity, mut velocity, transform) = q_ball.single_mut().unwrap();
     velocity.angvel = -10.0;
 
-    transform.translation = vec3(200.0 * rng.random_range(-1.0..=1.0), 100.0 * rng.random_range(-1.0..=1.0), 0.0);
+    let mut rng = rand::rng();
+    commands.entity(entity).insert(GameEntityAnimation::new(
+        SEVec3::new(transform.translation, vec3(200.0 * rng.random_range(-1.0..=1.0), 100.0 * rng.random_range(-1.0..=1.0), 0.0)),
+        SEVec3::new_without_anim(transform.scale),
+        abilities_info.get_current_stage_time(AbilitiesList::Ultimate(UltimatesList::Debug1))
+    ));
 }
 
 // End
