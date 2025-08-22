@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{platform::collections::HashMap, prelude::*};
 use bevy_rapier2d::prelude::*;
 
 use crate::{
@@ -53,10 +53,19 @@ struct Skill3sShadowEvent(PPos);
 fn despawn_shadow_by_timer(
     time: Res<Time>,
     mut commands: Commands,
-    s_query: Query<(Entity, &mut Shadow)>
+    q_shadow: Query<(Entity, &mut Shadow, &mut Transform)>,
+    q_player: Query<(&Player, &Transform), Without<Shadow>>
 ) {
-    for (entity, mut shadow) in s_query {
+    let mut translations = HashMap::<PPos, f32>::new();
+    for (player, transform) in q_player {
+        translations.insert(player.position, -transform.translation.y);
+    }
+
+    for (entity, mut shadow, mut transform) in q_shadow {
         shadow.timer.tick(time.delta());
+
+        // Цикл внутри цикла, ммм... Цикл говнокода продолжается
+        transform.translation.y = translations[&shadow.pos];
 
         if shadow.timer.finished() {
             commands.entity(entity).despawn();
@@ -100,7 +109,7 @@ fn sk_shadow_1s(
     }
 
     for (entity, player, transform) in q_player {
-        if player.position == ppos {
+        if player.position != ppos {
             continue
         }
 
@@ -148,7 +157,7 @@ fn sk_shadow_3s(
     }
 
     for (entity, player, transform) in q_player {
-        if player.position == ppos {
+        if player.position != ppos {
             continue
         }
 

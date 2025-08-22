@@ -27,7 +27,7 @@ impl Plugin for PlayersPlugin {
     }
 }
 
-#[derive(PartialEq, Clone, Copy, Debug)]
+#[derive(PartialEq, Eq, Hash, Clone, Copy, Debug)]
 pub enum PPos {
     Right,
     Left
