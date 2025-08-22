@@ -105,8 +105,8 @@ fn sk_shadow_1s(
         }
 
         commands.entity(entity).insert(GameEntityAnimation::new(
-            SEVec3::new_without_anim(transform.translation),
-            SEVec3::new(transform.scale, SHADOW_SCALE),
+            None,
+            Some(SEVec3::new(transform.scale, SHADOW_SCALE)),
             abilities_info.get_current_stage_time(AbilitiesList::Skill(SkillsList::Shadow))
         ));
 
@@ -126,8 +126,8 @@ fn sk_shadow_1s(
             Friction::coefficient(0.0),
             Collider::cuboid(PLAYER_SIZE.x / 2.0, PLAYER_SIZE.y / 2.0)
         )).insert(GameEntityAnimation::new(
-            SEVec3::new_without_anim(-transform.translation),
-            SEVec3::new(transform.scale, SHADOW_SCALE),
+            None,
+            Some(SEVec3::new(transform.scale, SHADOW_SCALE)),
             abilities_info.get_current_stage_time(AbilitiesList::Skill(SkillsList::Shadow))
         ));
     } 
@@ -153,8 +153,8 @@ fn sk_shadow_3s(
         }
 
         commands.entity(entity).insert(GameEntityAnimation::new(
-            SEVec3::new_without_anim(transform.translation), 
-            SEVec3::new(transform.scale, vec3(1.0, 1.0, 1.0)), 
+            None, 
+            Some(SEVec3::new(transform.scale, vec3(1.0, 1.0, 1.0))), 
             abilities_info.get_current_stage_time(AbilitiesList::Skill(SkillsList::Shadow))
         ));
     }
@@ -162,8 +162,8 @@ fn sk_shadow_3s(
     for (entity, shadow, transform) in q_shadow {
         if shadow.pos == ppos {
             commands.entity(entity).insert(GameEntityAnimation::new(
-                SEVec3::new_without_anim(transform.translation), 
-                SEVec3::new(transform.scale, vec3(0.0, 0.0, 0.0)),
+                None, 
+                Some(SEVec3::new(transform.scale, vec3(0.0, 0.0, 0.0))),
                 SHADOW_DEATH_DURATION
             ));
         }

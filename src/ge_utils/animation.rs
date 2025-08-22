@@ -29,8 +29,13 @@ fn animate_entities(
     q_ball: Query<(&mut Transform, &GameEntityAnimation)>,
 ) {
     for (mut transform, anim) in q_ball {
-        transform.translation = anim.lerp_position();
-        transform.scale = anim.lerp_scale();
+        if let Some(_) = anim.pos {
+            transform.translation = anim.lerp_position();
+        }
+        
+        if let Some(_) = anim.scale {
+            transform.scale = anim.lerp_scale();
+        }
     }
 }
 
@@ -46,10 +51,6 @@ impl SEVec3 {
     pub fn new(s: Vec3, t: Vec3) -> Self {
         Self { start: s, target: t }
     }
-
-    pub fn new_without_anim(base: Vec3) -> Self {
-        Self { start: base, target: base }
-    }
 }
 
 #[derive(Component)]
@@ -60,21 +61,21 @@ pub struct GameEntityAnimation {
 }
 
 impl GameEntityAnimation {
-    pub fn lerp_position(&self) -> Vec3 {
+    fn lerp_position(&self) -> Vec3 {
         let pos = self.pos.unwrap();
         pos.start.lerp(pos.target, self.timer.fraction())
     }
 
-    pub fn lerp_scale(&self) -> Vec3 {
+    fn lerp_scale(&self) -> Vec3 {
         let scale = self.scale.unwrap();
         scale.start.lerp(scale.target, self.timer.fraction())
     }
 
     pub fn new(
-        position: SEVec3,
-        scale: SEVec3,
+        position: Option<SEVec3>,
+        scale: Option<SEVec3>,
         duration: f32,
     ) -> Self {
-        Self { pos: Some(position), scale: Some(scale), timer: Timer::from_seconds(duration, TimerMode::Once) }
+        Self { pos: position, scale: scale, timer: Timer::from_seconds(duration, TimerMode::Once) }
     }
 }

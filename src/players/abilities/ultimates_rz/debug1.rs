@@ -85,8 +85,8 @@ fn ul_db1_1s(
 
     let mut rng = rand::rng();
     commands.entity(entity).insert(GameEntityAnimation::new(
-        SEVec3::new(transform.translation, vec3(200.0 * rng.random_range(-1.0..=1.0), 100.0 * rng.random_range(-1.0..=1.0), 0.0)),
-        SEVec3::new_without_anim(transform.scale),
+        Some(SEVec3::new(transform.translation, vec3(200.0 * rng.random_range(-1.0..=1.0), 100.0 * rng.random_range(-1.0..=1.0), 0.0))),
+        None,
         abilities_info.get_current_stage_time(AbilitiesList::Ultimate(UltimatesList::Debug1))
     ));
 }
@@ -101,8 +101,8 @@ fn ul_db1_2s(
 
     let mut rng = rand::rng();
     commands.entity(entity).insert(GameEntityAnimation::new(
-        SEVec3::new(transform.translation, vec3(200.0 * rng.random_range(-1.0..=1.0), 100.0 * rng.random_range(-1.0..=1.0), 0.0)),
-        SEVec3::new_without_anim(transform.scale),
+        Some(SEVec3::new(transform.translation, vec3(200.0 * rng.random_range(-1.0..=1.0), 100.0 * rng.random_range(-1.0..=1.0), 0.0))),
+        None,
         abilities_info.get_current_stage_time(AbilitiesList::Ultimate(UltimatesList::Debug1))
     ));
 }
