@@ -69,6 +69,7 @@ fn start_skill_stages(
     for ev in ability_event.read() {
         commands.entity(stager).insert(match ev.get_ability() {
             SkillsList::Revert => StageTimer::new(ev.pos, AbilitiesList::Skill(SkillsList::Revert)),
+            SkillsList::Shadow => StageTimer::new(ev.pos, AbilitiesList::Skill(SkillsList::Shadow)),
         });
     }
 }

@@ -69,12 +69,12 @@ impl Player {
             
             skill_timer: Timer::from_seconds(SKILL_REFRESH_DURATION, TimerMode::Once),
             skills_queue: AbilityQueue::new(vec![
-                SkillsList::Revert,
+                //SkillsList::Revert,
+                SkillsList::Shadow,
             ]),
 
             ultimates_queue: AbilityQueue::new(vec![
                 UltimatesList::Debug1,
-                UltimatesList::Debug2,
             ]),
             ultimate_progress: 0,
         }

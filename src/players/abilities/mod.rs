@@ -105,12 +105,14 @@ pub trait Ability {
 #[derive(Hash, Clone, Copy, PartialEq, Eq)]
 pub enum SkillsList {
     Revert,
+    Shadow,
 }
 
 impl Ability for SkillsList {
     fn to_str(&self) -> String {
         match self {
             Self::Revert => "Revert".to_string(),
+            Self::Shadow => "Shadow".to_string(),
         }
     }
 }
