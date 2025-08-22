@@ -12,7 +12,6 @@ pub const SKILL_REFRESH_DURATION: f32 = 10.0;
 
 const SPEED: f32 = 250.0;
 const PLAYER_SIZE: Vec2 = Vec2::new(25.0, crate::WINDOW_SIZE.y / 3.5);
-
 pub struct PlayersPlugin;
 
 impl Plugin for PlayersPlugin {

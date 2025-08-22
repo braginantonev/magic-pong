@@ -1,7 +1,13 @@
 use bevy::prelude::*;
 
 use crate::{
-    players::{ score::IncreaseScoreEvent, PPos, Player },
+    players::
+    { 
+        score::IncreaseScoreEvent, 
+        PPos, 
+        PState,
+        Player,
+    },
     GameState
 };
 
@@ -73,12 +79,22 @@ fn use_ultimate_by_input(
 fn start_ultimate_stages(
     mut commands: Commands,
     mut ability_event: EventReader<UseAbilityEvent<UltimatesList>>,
+    q_player: Query<&mut Player>,
 ) {
     let stager = commands.spawn(Stager).id();
+    let mut pos = PPos::Left;
+    
     for ev in ability_event.read() {
         commands.entity(stager).insert(match ev.get_ability() {
             UltimatesList::Debug1 => StageTimer::new(ev.pos, AbilitiesList::Ultimate(UltimatesList::Debug1)),
             UltimatesList::Debug2 => todo!(),
         });
+        pos = ev.pos;
+    }
+
+    for mut player in q_player {
+        if player.get_pos() != pos {
+            player.state = PState::Silence;
+        }
     }
 }

@@ -4,20 +4,22 @@ use rand::Rng;
 
 use crate::{
     ball::{
-        Ball, MAX_START_SPEED_X, MAX_START_SPEED_Y,
         spawn::gen_random_velocity_coef,
+        Ball, MAX_START_SPEED_X, MAX_START_SPEED_Y
     }, 
-    players::abilities::{
-        AbilitiesList,
-        UltimatesList,
-        StageEntered,
-        abilities_db::AbilitiesInfo,
-    },
     ge_utils::animation::{
         GameEntityAnimation,
         SEVec3,
-    },
-    GameState,
+    }, 
+    players::{
+        abilities::{
+            abilities_db::AbilitiesInfo, AbilitiesList, StageEntered, UltimatesList
+        },
+        PPos,
+        PState,
+        Player
+    }, 
+    GameState
 };
 
 pub struct Debug1Plugin;
@@ -44,8 +46,9 @@ struct Ult1sDebug1Event;
 #[derive(Event)]
 struct Ult2sDebug1Event;
 
+/// Last stage (PPos needed)
 #[derive(Event)]
-struct Ult3sDebug1Event;
+struct Ult3sDebug1Event(PPos);
 
 // Кто это читает, знайте, что этот код полное дерьмище, конкретно из-за этой части можно побить автора, то есть меня
 // Никогда так не делайте пожалуйста
@@ -65,7 +68,7 @@ fn check_debug1_stages(
         match abilities_info.get_stage_counter(ev.ability).get_current_stage() {
             0 => { ult_1s_ev_writer.write(Ult1sDebug1Event); },
             1 => { ult_2s_ev_writer.write(Ult2sDebug1Event); },
-            2 => { ult_3s_ev_writer.write(Ult3sDebug1Event); },
+            2 => { ult_3s_ev_writer.write(Ult3sDebug1Event(ev.player)); },
             _ => continue
         };
     }
@@ -107,8 +110,21 @@ fn ul_db1_2s(
 // End
 fn ul_db1_3s(
     mut q_ball: Query<&mut Velocity, With<Ball>>,
+    mut end_ev: EventReader<Ult3sDebug1Event>,
+    q_player: Query<&mut Player>,
 ) {
     let mut velocity = q_ball.single_mut().unwrap();
     velocity.angvel = 0.0;
     velocity.linvel = vec2(gen_random_velocity_coef() * MAX_START_SPEED_X, gen_random_velocity_coef() * MAX_START_SPEED_Y);
+
+    let mut ppos = PPos::Left;
+    for ev in end_ev.read() {
+        ppos = ev.0;
+    }
+
+    for mut player in q_player {
+        if player.position != ppos {
+            player.state = PState::Normal;
+        }
+    }
 }
