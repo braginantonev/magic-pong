@@ -24,8 +24,22 @@ pub struct AbilitiesInfo(HashMap<AbilitiesList, AbilityInfo>);
 impl Default for AbilitiesInfo {
     fn default() -> Self {
         Self(HashMap::from([
+            
+            // 1s - minus ball velocity
             (AbilitiesList::Skill(SkillsList::Revert), AbilityInfo::new(0, None)),
-            (AbilitiesList::Ultimate(UltimatesList::Debug1), AbilityInfo::new(2, Some(vec![1.5, 1.5])))
+
+            /*  
+                1s - spawn player shadow and decrease player, shadow scale
+                2s - shadow lifetime
+                3s - animate increase player scale to normal and despawn shadow
+            */
+            (AbilitiesList::Skill(SkillsList::Shadow), AbilityInfo::new(2, Some(vec![1.0, 5.0, 1.0]))),
+
+            /*  
+                1&2s - animate ball translation to random coords
+                3s - return velocity for ball 
+            */
+            (AbilitiesList::Ultimate(UltimatesList::Debug1), AbilityInfo::new(2, Some(vec![1.5, 1.5]))),
         ]))
     }
 }
