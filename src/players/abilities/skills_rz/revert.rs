@@ -22,7 +22,7 @@ impl Plugin for SkillRevertPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_event::<Skill1sRevertEvent>()
-            .add_systems(Update, sl_revert_1s.run_if(in_state(GameState::InGame)).run_if(on_event::<Skill1sRevertEvent>))
+            .add_systems(Update, sk_revert_1s.run_if(in_state(GameState::InGame)).run_if(on_event::<Skill1sRevertEvent>))
             .add_systems(Update, check_revert_stages.run_if(in_state(GameState::InGame)).run_if(on_event::<StageEntered>))
         ;
     }
@@ -45,7 +45,6 @@ fn check_revert_stages(
             return
         }
 
-        println!("start ev(current ability counter = {})", abilities_info.get_stage_counter(ev.ability).get_current_stage());
         match abilities_info.get_stage_counter(ev.ability).get_current_stage() {
             0 => skill_1s_ev_writer.write(Skill1sRevertEvent(ev.player)),
             _ => continue,
@@ -53,7 +52,7 @@ fn check_revert_stages(
     }
 }
 
-fn sl_revert_1s(
+fn sk_revert_1s(
     mut asr_event: EventReader<Skill1sRevertEvent>,
     mut q_ball: Query<&mut Velocity, With<Ball>>,
     q_players: Query<(&Transform, &Player)>
