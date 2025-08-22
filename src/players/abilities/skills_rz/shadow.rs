@@ -88,7 +88,7 @@ fn check_revert_stages(
             return
         }
 
-        match abilities_info.get_stage_counter(ev.ability).get_current_stage() {
+        match abilities_info.get_stage_counter(ev.player, ev.ability).get_current_stage() {
             0 => { skill_1s_ev_writer.write(Skill1sShadowEvent(ev.player)); },
             2 => { skill_3s_ev_writer.write(Skill3sShadowEvent(ev.player)); },
             _ => continue,
@@ -102,7 +102,6 @@ fn sk_shadow_1s(
     mut ev_1s: EventReader<Skill1sShadowEvent>,
     q_player: Query<(Entity, &Player, &Transform)>
 ) {
-    println!("Я ПОЯВИЛСЯ Я ЗДЕСЬ Я ЖИВОЙ!!!!");
     let mut ppos = PPos::Left;
     for ev in ev_1s.read() {
         ppos = ev.0;
@@ -116,7 +115,7 @@ fn sk_shadow_1s(
         commands.entity(entity).insert(GameEntityAnimation::new(
             None,
             Some(SEVec3::new(transform.scale, SHADOW_SCALE)),
-            abilities_info.get_current_stage_time(AbilitiesList::Skill(SkillsList::Shadow))
+            abilities_info.get_current_stage_time(ppos, AbilitiesList::Skill(SkillsList::Shadow))
         ));
 
         commands.spawn((
@@ -137,7 +136,7 @@ fn sk_shadow_1s(
         )).insert(GameEntityAnimation::new(
             None,
             Some(SEVec3::new(transform.scale, SHADOW_SCALE)),
-            abilities_info.get_current_stage_time(AbilitiesList::Skill(SkillsList::Shadow))
+            abilities_info.get_current_stage_time(ppos, AbilitiesList::Skill(SkillsList::Shadow))
         ));
     } 
 }
@@ -164,7 +163,7 @@ fn sk_shadow_3s(
         commands.entity(entity).insert(GameEntityAnimation::new(
             None, 
             Some(SEVec3::new(transform.scale, vec3(1.0, 1.0, 1.0))), 
-            abilities_info.get_current_stage_time(AbilitiesList::Skill(SkillsList::Shadow))
+            abilities_info.get_current_stage_time(ppos, AbilitiesList::Skill(SkillsList::Shadow))
         ));
     }
 

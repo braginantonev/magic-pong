@@ -2,6 +2,8 @@ use std::collections::HashMap;
 
 use bevy::prelude::*;
 
+use crate::players::PPos;
+
 use super::{
     SkillsList,
     UltimatesList,
@@ -49,21 +51,20 @@ impl AbilitiesInfo {
         self.0[&ability].stage_times.clone()
     }
 
-    pub fn get_stage_counter(&self, ability: AbilitiesList) -> StageCounter {
-        self.0[&ability].counter
+    pub fn get_stage_counter(&self, ppos: PPos, ability: AbilitiesList) -> StageCounter {
+        self.0[&ability].counter[&ppos]
     }
 
-    pub fn add_to_counter(&mut self, ability: AbilitiesList) -> bool {
-        self.0.get_mut(&ability).expect("Ability not found in db").counter.add()
+    pub fn add_to_counter(&mut self, ppos: PPos, ability: AbilitiesList) -> bool {
+        self.0.get_mut(&ability).expect("Ability not found in db").counter.get_mut(&ppos).expect("counter not found").add()
     }
 
-    pub fn get_current_stage_time(&self, ability: AbilitiesList) -> f32 {
+    pub fn get_current_stage_time(&self, ppos: PPos, ability: AbilitiesList) -> f32 {
         if self.0[&ability].stage_times.is_empty() {
-            println!("hello");
             return 0.0
         }
 
-        self.0[&ability].stage_times[self.0[&ability].counter.current as usize]
+        self.0[&ability].stage_times[self.0[&ability].counter[&ppos].current as usize]
     } 
 }
 
@@ -82,15 +83,12 @@ impl StageCounter {
     // Return true if counter is to end stage
     pub fn add(&mut self) -> bool {
         if self.next <= self.count {
-            println!("add to counter(current: {}, next: {})", self.current, self.next);
             self.current = self.next;
             self.next += 1;
-            println!("successfully added(current: {}, next: {})", self.current, self.next);
         }
 
         
         if self.next > self.count {
-            println!("break counter(current: {})", self.current);
             self.next = 0;
             return true
         }
@@ -108,14 +106,17 @@ impl StageCounter {
 }
 
 struct AbilityInfo {
-    counter: StageCounter,
+    counter: HashMap<PPos, StageCounter>,
     stage_times: Vec<f32>,
 }
 
 impl AbilityInfo {
     fn new(stage_count: u8, stage_times: Option<Vec<f32>>) -> Self {
         Self {
-            counter: StageCounter::new(stage_count),
+            counter: HashMap::from([
+                (PPos::Right, StageCounter::new(stage_count)),
+                (PPos::Left, StageCounter::new(stage_count)),
+            ]),
             stage_times: if let Some(st) = stage_times {
                 st
             } else {

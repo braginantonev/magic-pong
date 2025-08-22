@@ -41,10 +41,10 @@ impl Plugin for Debug1Plugin {
 //* Revert stages events */
 
 #[derive(Event)]
-struct Ult1sDebug1Event;
+struct Ult1sDebug1Event(PPos);
 
 #[derive(Event)]
-struct Ult2sDebug1Event;
+struct Ult2sDebug1Event(PPos);
 
 /// Last stage (PPos needed)
 #[derive(Event)]
@@ -64,10 +64,10 @@ fn check_debug1_stages(
             return
         }
 
-        println!("start ev(current ability counter = {})", abilities_info.get_stage_counter(ev.ability).get_current_stage());
-        match abilities_info.get_stage_counter(ev.ability).get_current_stage() {
-            0 => { ult_1s_ev_writer.write(Ult1sDebug1Event); },
-            1 => { ult_2s_ev_writer.write(Ult2sDebug1Event); },
+        println!("start ev(current ability counter = {})", abilities_info.get_stage_counter(ev.player, ev.ability).get_current_stage());
+        match abilities_info.get_stage_counter(ev.player, ev.ability).get_current_stage() {
+            0 => { ult_1s_ev_writer.write(Ult1sDebug1Event(ev.player)); },
+            1 => { ult_2s_ev_writer.write(Ult2sDebug1Event(ev.player)); },
             2 => { ult_3s_ev_writer.write(Ult3sDebug1Event(ev.player)); },
             _ => continue
         };
@@ -78,16 +78,22 @@ fn ul_db1_1s(
     abilities_info: Res<AbilitiesInfo>,
     mut commands: Commands,
     mut q_ball: Query<(Entity, &mut Velocity, &Transform), With<Ball>>,
+    mut s1_event: EventReader<Ult1sDebug1Event>,
 ) {
     let (entity, mut velocity, transform) = q_ball.single_mut().unwrap();
     velocity.linvel = Vec2::ZERO;
     velocity.angvel = 25.0;
 
+    let mut ppos = PPos::Left;
+    for ev in s1_event.read() {
+        ppos = ev.0;
+    }
+
     let mut rng = rand::rng();
     commands.entity(entity).insert(GameEntityAnimation::new(
         Some(SEVec3::new(transform.translation, vec3(200.0 * rng.random_range(-1.0..=1.0), 100.0 * rng.random_range(-1.0..=1.0), 0.0))),
         None,
-        abilities_info.get_current_stage_time(AbilitiesList::Ultimate(UltimatesList::Debug1))
+        abilities_info.get_current_stage_time(ppos, AbilitiesList::Ultimate(UltimatesList::Debug1))
     ));
 }
 
@@ -95,15 +101,21 @@ fn ul_db1_2s(
     abilities_info: Res<AbilitiesInfo>,
     mut commands: Commands,
     mut q_ball: Query<(Entity, &mut Velocity, &Transform), With<Ball>>,
+    mut s1_event: EventReader<Ult2sDebug1Event>,
 ) {
     let (entity, mut velocity, transform) = q_ball.single_mut().unwrap();
     velocity.angvel = -10.0;
+
+    let mut ppos = PPos::Left;
+    for ev in s1_event.read() {
+        ppos = ev.0;
+    }
 
     let mut rng = rand::rng();
     commands.entity(entity).insert(GameEntityAnimation::new(
         Some(SEVec3::new(transform.translation, vec3(200.0 * rng.random_range(-1.0..=1.0), 100.0 * rng.random_range(-1.0..=1.0), 0.0))),
         None,
-        abilities_info.get_current_stage_time(AbilitiesList::Ultimate(UltimatesList::Debug1))
+        abilities_info.get_current_stage_time(ppos, AbilitiesList::Ultimate(UltimatesList::Debug1))
     ));
 }
 

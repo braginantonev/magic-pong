@@ -82,14 +82,11 @@ fn tick_stage(
         stage_timer.timer.tick(time.delta());
 
         if stage_timer.timer.finished() {
-            println!("write event");
             stage_ev.write(StageEntered { ability: stage_timer.ability, player: stage_timer.player });
 
-            if !ability_info.add_to_counter(stage_timer.ability) { // Not in the end stage
-                println!("update timer");
-                stage_timer.timer = Timer::from_seconds(ability_info.get_current_stage_time(stage_timer.ability), TimerMode::Once);
+            if !ability_info.add_to_counter(stage_timer.player, stage_timer.ability) { // Not in the end stage
+                stage_timer.timer = Timer::from_seconds(ability_info.get_current_stage_time(stage_timer.player, stage_timer.ability), TimerMode::Once);
             } else {
-                println!("delete stager with timer");
                 commands.entity(entity).despawn();
             }
         }

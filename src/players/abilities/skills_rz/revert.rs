@@ -45,7 +45,7 @@ fn check_revert_stages(
             return
         }
 
-        match abilities_info.get_stage_counter(ev.ability).get_current_stage() {
+        match abilities_info.get_stage_counter(ev.player, ev.ability).get_current_stage() {
             0 => skill_1s_ev_writer.write(Skill1sRevertEvent(ev.player)),
             _ => continue,
         };
